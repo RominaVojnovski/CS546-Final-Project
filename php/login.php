@@ -1,0 +1,4 @@
+<?PHP
+
+echo "LOGIN PAGE PLACEHOLDER";
+?>
