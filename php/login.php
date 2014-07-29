@@ -40,9 +40,6 @@
                 <a href="../index.html">Pix Gallery</a>
             </li>
             <li>
-                <a href="#">Home</a>
-            </li>
-            <li>
                 <a href="#">Photos</a>
             </li>
             <li>
