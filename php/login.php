@@ -64,19 +64,100 @@
     <!-- MAIN AREA OF PAGE-->
    
     
-    <h2>LOGIN</h2>
+    <h2></h2>
         <BR/>
+        
+        
         <div class="row">
-            <div class="col-sm-12">
-                PLACEHOLDER
-
-            </div>
        
+            <div class="col-sm-8">
+                <?php
+                
+                if(!empty($_SESSION['LoggedIn']) && !empty($_SESSION['Username']))
+                {
+                ?>
+ 
+                <h1>Member Area</h1>
+                <pThanks for logging in! You are <code><?=$_SESSION['Username']?></code> and your email address is <code>                 <?=$_SESSION['EmailAddress']?></code>.</p>
+      
+                <?php
+                }
+                elseif(!empty($_POST['email']) && !empty($_POST['password']))
+                {
+                    include("mysqli_class.php");
+                    $db=new database(); 
+                    
+                    $email = $_POST['email'];
+                    $password = hash('sha256',$_POST['password']);
+     
+                    $query= "SELECT * FROM users WHERE email = '".$email."' AND password = '".$password."'";
+                    
+                    
+                    $db->send_sql($query);
+                    
+               
+                    if($row=$db->next_row())
+                    {
+                        $email = $row['email'];
+                        $name = $row['name'];
+                        
+         
+                        $_SESSION['name'] = $name;
+                        $_SESSION['email'] = $email;
+                        $_SESSION['loggedin'] = 1;
+         
+                        echo "<h1>Success</h1>";
+                        echo "<p>Welcome Back ".$name."!</p>";
+                     
+                    }
+                    else
+                    {
+                    echo "<h1>Error</h1>";
+                    echo "<p>Sorry, your account could not be found. Please <a href=\"login.php\">click here to try again</a>.</p>";
+                    }
+                }
+            
+                else
+                {
+                ?>
+     
+                <h1>Member Login</h1>
+     
+                <p>Thanks for visiting! Please either login below, or <a href="register.php">click here to register</a>.</p>
+     
+               
+    
+                <form role="form" method="post" action="login.php" name="loginform" id="loginform">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                        <input type="checkbox"> Remember Me
+                        </label>
+                    </div>
+                    <button type="submit" name="login" value="login" class="btn btn-default">Submit</button>
+                </form>
+    
+                
+                <?php
+                }
+                ?>
+                
+            
         
         </div>
+    <div class="col-sm-4">
+    </div>
+    </div>
     
     
-     <!-- jQuery Version 1.11.0 -->
+    <!-- jQuery Version 1.11.0 -->
     <script src="../js/jquery-1.11.0.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
