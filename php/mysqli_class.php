@@ -5,14 +5,14 @@
     **  Class database written by Steven A. Gabarró **
 	** 												**
 	*************************************************/
-	include("../../../dbprop.php");
+
 	class database
 	{
 		private $res;
-		private $host = $DB_HOST; // change to your own default values
-		private $user = $DB_USER; // change to your own default values
-		private $pass = $DB_PASS; // change to your own default values
-		private $db= $DB_NAME;
+		private $host = "ec2-54-82-112-58.compute-1.amazonaws.com"; // change to your own default values
+		private $user = "cs546"; // change to your own default values
+		private $pass = "pixgallerydb"; // change to your own default values
+		private $db= "pixgallery";
 		private $mysqli;
 
 
