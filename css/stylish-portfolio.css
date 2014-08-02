@@ -247,3 +247,9 @@ hr.small {
 footer {
     padding: 100px 0;
 }
+
+/*Custom styling */
+
+#mymain_row{
+    color: #000;
+}
