@@ -13,12 +13,13 @@
     $templatename = "uploadalbum.tpl";
     //$_SESSION['userid']=1; 
     // Get the userid from session.
-    $userid = $_SESSION['userid'];
+    $userid = $_SESSION['uid'];
     
-    
+   error_log("\nloggedin :: ".$_SESSION['loggedin']." userid::  ".$userid, 3, "/var/tmp/my-errors.log");
     // If session doesnot exist redirect user to login page.
-    if(!isset($_SESSION['loggedin']) && !isset($userid))
-      header("location:login.php");
+    if(!isset($_SESSION['loggedin']) && !isset($userid)){
+          header("location:login.php");
+    }
     elseif(isset($_FILES['file_input']) && !empty($_FILES['file_input'])){
         $uploadsDirectory = dirname($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'uploaded_files'.DIRECTORY_SEPARATOR.$userid; 
         // Convert image files to image objects.

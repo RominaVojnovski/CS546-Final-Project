@@ -128,6 +128,7 @@
             </div>
 
       </form>
+    <div id="dialog"><div id="dialogText"></div></div>
 </div>
 
   </div>

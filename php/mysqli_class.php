@@ -6,13 +6,14 @@
 	** 												**
 	*************************************************/
 	include("../../../dbprop.php");
+    
 	class database
 	{
 		private $res;
-		private $host = $DB_HOST; // change to your own default values
-		private $user = $DB_USER; // change to your own default values
-		private $pass = $DB_PASS; // change to your own default values
-		private $db= $DB_NAME;
+		private $host = DB_HOST; // change to your own default values
+		private $user = DB_USER; // change to your own default values
+		private $pass = DB_PASS; // change to your own default values
+		private $db= DB_NAME;
 		private $mysqli;
 
 
@@ -130,6 +131,20 @@
 			echo "You need to make a query first!!!";
 			return false;
 		}
+
+    public function next_res_row($res){
+      if (isset($res))
+				return $res->fetch_assoc();
+			echo "You need to make a query first!!!";
+			return false;
+    }
+
+   public function startTransaction(){
+      $this->mysqli->autocommit(false);
+   } 
+   public function endTransaction(){
+      $this->mysqli->commit();
+   }
 
 		// returns the last AUTO_INCREMENT data created
 		public function insert_id()

@@ -68,8 +68,7 @@
         {
             
             include("email.php");
-            include("dbprop.php");
-            
+           	include("../../../dbprop.php");            
             
             $proceed_reg=true;
             $goodemail=false;
@@ -77,7 +76,7 @@
             $p1=trim($_POST['password']);
             $p2=trim($_POST['password2']);
          
-            $db = new mysqli($DB_HOST,$DB_USER,$DB_PASS,$DB_NAME);
+            $db = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
             
             $fullname = filter_var($_POST['fullname'], FILTER_SANITIZE_STRING);
             
@@ -141,7 +140,7 @@
                         exit;
                     }
                     $stmt->bind_param('ssss',$fullname,$password,$email,$profile);
-            
+
                     if (!$stmt->execute()) {
                         echo 'Database execute error';
                         exit;
@@ -159,7 +158,7 @@
                     }
                     
                     $stmt->bind_param('sss',$fullname,$password,$email);
-            
+
                     if (!$stmt->execute()) {
                         echo 'Database execute error';
                         exit;
