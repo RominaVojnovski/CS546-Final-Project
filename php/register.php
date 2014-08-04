@@ -63,29 +63,127 @@
     
     <!-- MAIN AREA OF PAGE-->
     <?php
-        if(!empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['fullname'])){
-           
-            include("mysqli_class.php");
-            $db= new database();
+        $error_message2="";
+        if(!empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['password2']) && !empty($_POST['fullname']))
+        {
             
-            $fullname = $_POST['fullname'];
-            $email = $_POST['email'];
+            include("email.php");
+            include("dbprop.php");
             
-            $password = hash('sha256',$_POST['password']);
-        
+            
+            $proceed_reg=true;
+            $goodemail=false;
+            
+            $p1=trim($_POST['password']);
+            $p2=trim($_POST['password2']);
+         
+            $db = new mysqli($DB_HOST,$DB_USER,$DB_PASS,$DB_NAME);
+            
+            $fullname = filter_var($_POST['fullname'], FILTER_SANITIZE_STRING);
+            
+            
+            $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+            
             if(!empty($_POST['user_profile'])){
-                $profile = $_POST['user_profile'];
-                $query="INSERT INTO users (name,password,email,user_profile) VALUES ('".$fullname."','".$password."','".$email."','".$profile."')";
-            
+                $profile=filter_var($_POST['user_profile'], FILTER_SANITIZE_STRING);    
             }
-            else{
-                $query="INSERT INTO users (name,password,email) VALUES ('".$fullname."','".$password."','".$email."')";
+        
+            
+            
+            
+            //goodemail is boolean to check whether valid email or not
+            $goodemail=filter_var($email, FILTER_VALIDATE_EMAIL);
+                
+           
+            //passwords do not match dont proceed the registration
+            if((strcmp($p1,$p2))!== 0){
+                $error_message2.="Passwords do not match! ";
+                $proceed_reg=false;
+                
+            }
+     
+            //if name length less than 5 chars or greater than 50 chars dont proceed the registration
+            if(((strlen($fullname))<5) || ((strlen($fullname))>50)){
+                $proceed_reg=false;
+                $error_message2.="Invalid name, please enter 5 to 50 characters! ";
+            }
+            if (preg_match('/[^a-zA-Z ]/', $fullname)){
+                $proceed_reg=false;
+                $error_message2.="Invalid name, please use only alphabetical characters! ";    
             }
             
+            $pattern = '/(?=.*\d)(?=.*[a-zA-Z]).{6,15}/';
+
+            if (!preg_match($pattern,$p1)){
+                $proceed_reg=false;
+                $error_message2.="Invalid password, please use alphanumeric chars min 6 max 15 chars long! Must contain at least one number and one alphabetical character!";    
+            } 
             
-            $db->send_sql($query);
             
-            echo "<h1>Please check your email to confirm registration</h1>";
+            if(!$goodemail){
+                $proceed_reg=false;
+                $error_message2.="Invalid email address! ";
+            } 
+            
+            
+            if($proceed_reg){
+                
+                 //hashed password
+                $password = hash('sha256',$p1);
+ 
+                //user has entered data in profile field....
+                
+                if(!empty($profile)){
+                    $sql = "INSERT INTO users (name,password,email,user_profile) VALUES (?,?,?,?)";
+                
+                    if (!$stmt = $db->prepare($sql)) {
+                        echo 'Database prepare error';
+                        exit;
+                    }
+                    $stmt->bind_param('ssss',$fullname,$password,$email,$profile);
+            
+                    if (!$stmt->execute()) {
+                        echo 'Database execute error';
+                        exit;
+                    }
+                    $stmt->close();      
+                
+                }   
+                else {
+                    
+                    $sql = "INSERT INTO users (name,password,email) VALUES (?,?,?)";
+                    
+                    if (!$stmt = $db->prepare($sql)) {
+                        echo 'Database prepare error';
+                        exit;
+                    }
+                    
+                    $stmt->bind_param('sss',$fullname,$password,$email);
+            
+                    if (!$stmt->execute()) {
+                        echo 'Database execute error';
+                        exit;
+                    }
+                    $stmt->close();
+                }
+                   
+            
+                $uid=$db->insert_id;
+                
+                //send verification email
+                //swift mail library   
+                $mailer = Swift_Mailer::newInstance($transport);
+
+                $message = Swift_Message::newInstance('Test Subject')
+                        ->setFrom(array('pixgalleryweb@gmail.com' => 'admin'))
+                        ->setTo(array($email))
+                        ->setBody('This is a test mail.');
+                $result = $mailer->send($message);    
+                //redirect to complete php page to inform user to check their email 
+                header("Location:complete.php");
+                
+            }//end if post variables are set (not empty)
+                   
         }
 
     ?>
@@ -99,7 +197,11 @@
             *Full Name:
         </label>
         <div class="col-md-10">
-            <input type="text" class="form-control" name="fullname" id="fullname" placeholder="Enter Full Name" required>
+            <input type="text" class="form-control" name="fullname" id="fullname" onkeyup="checkName(); return false;" placeholder="Enter Full Name" required><span id="confirmMessage3" class="confirmMessage"></span>
+            <p class="help-block">
+                Name must be alphabetical characters only between 5 to 50 characters long
+            </p>
+            
         </div>
         </div>
 
@@ -117,13 +219,25 @@
         </div>
  
         <div class="form-group">
-            <label for="pSassword" class="col-md-2">
+            <label for="password" class="col-md-2">
+            *Password:
+            </label>
+            <div class="col-md-10">
+                <input type="password" class="form-control" name="password" id="password" onkeyup="checkPass(); return false;" placeholder="Enter Password" required><span id="confirmMessage2" class="confirmMessage"></span>
+                    <p class="help-block">
+                    Min: 6 characters Max: 15 characters (Alphanumeric only, at least one numeric and at least one alphabetic character)
+                    </p>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="password2" class="col-md-2">
                 *Password:
             </label>
             <div class="col-md-10">
-                <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
+                <input type="password" class="form-control" name="password2" id="password2" onkeyup="checkPass(); return false;" placeholder="Re-enter Password" required><span id="confirmMessage" class="confirmMessage"></span>
                     <p class="help-block">
-                    Min: 6 characters (Alphanumeric only)
+                    Confirm password
                     </p>
             </div>
         </div>
@@ -148,6 +262,18 @@
                 </button>
             </div>
         </div>
+        
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-10">
+                <p>
+                    <?php 
+                        echo $error_message2; 
+                    ?>
+                </p>
+            </div>
+        </div>
     </form>
             
         
@@ -160,18 +286,95 @@
     <!-- Custom Theme JavaScript -->
     <script>
     // Closes the sidebar menu
-    $("#menu-close").click(function(e) {
-        e.preventDefault();
-        $("#sidebar-wrapper").toggleClass("active");
-    });
+    
+        $("#menu-close").click(function(e) {
+            e.preventDefault();
+        
+            $("#sidebar-wrapper").toggleClass("active");
+        });
 
-    // Opens the sidebar menu
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#sidebar-wrapper").toggleClass("active");
-    });
+        // Opens the sidebar menu
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#sidebar-wrapper").toggleClass("active");
+        });
+        
+        var goodColor = "#66cc66";
+        var badColor = "#ff6666";
+        
+        function checkName(){
+            var fullname = document.getElementById('fullname');
+            var message3 = document.getElementById('confirmMessage3');
+            re = /^[a-zA-Z ]+$/;
+            
+            if((!re.test(fullname.value)) || (fullname.value.length>50) || (fullname.value.length<6)){
+                fullname.style.backgroundColor = badColor;
+                message3.style.color = badColor;
+                message3.innerHTML = "Name field requirement not met"
+            }
+            else if((re.test(fullname.value))&& (fullname.value.length<51) && (fullname.value.length>5)) {
+                fullname.style.backgroundColor = goodColor;
+                message3.style.color = goodColor;
+                message3.innerHTML = "Name field requirement met"
 
- 
+            }
+        }
+        
+        
+        
+        function checkPass()
+        {
+        
+            //Store the password field objects into variables ...
+        
+            var pass1 = document.getElementById('password');
+        
+            var pass2 = document.getElementById('password2');
+            //Store the Confimation Message Object ...
+            var message = document.getElementById('confirmMessage');
+            var message2 = document.getElementById('confirmMessage2');
+            //Set the colors we will be using ...
+            var goodColor = "#66cc66";
+            var badColor = "#ff6666";
+            
+            //check that password requirement is met
+            //re = /(?=.*[a-zA-Z])(?=.*[0-9]).{6,15}/;
+            re= /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/;
+            
+            //re = /^[a-zA-Z ]+$/;
+            if((pass1.value.length < 6) || (pass1.value.length > 15) || !re.test(pass1.value)){
+                pass1.style.backgroundColor = badColor;
+                message2.style.color = badColor;
+                message2.innerHTML = "Password requirement not met!"
+            
+            }
+            if((pass1.value.length>5) && (pass1.value.length<15) && re.test(pass1.value)){
+                pass1.style.backgroundColor = goodColor;
+                message2.style.color = goodColor;
+                message2.innerHTML = "Password requirement met"
+            }
+
+            //Compare the values in the password field 
+            //and the confirmation field
+            if((pass1.value == pass2.value) && (pass2.value.length > 0)){
+                //The passwords match. 
+                //Set the color to the good color and inform
+                //the user that they have entered the correct password 
+                pass2.style.backgroundColor = goodColor;
+                message.style.color = goodColor;
+                message.innerHTML = "Passwords match"
+            }
+        
+        
+            else if((pass1.value !== pass2.value) && (pass2.value.length > 0)){
+                //The passwords do not match.
+                //Set the color to the bad color and
+                //notify the user.
+                pass2.style.backgroundColor = badColor;
+                message.style.color = badColor;
+                message.innerHTML = "Passwords Do Not Match!"
+            }
+        }  
     </script>
 </html>
 

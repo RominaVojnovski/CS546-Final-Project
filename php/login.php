@@ -72,14 +72,47 @@
        
             <div class="col-sm-8">
                 <?php
-                
-                if(!empty($_SESSION['LoggedIn']) && !empty($_SESSION['Username']))
+                session_start();
+               
+                if(!empty($_SESSION['loggedin']))
                 {
+                    $error_message='';
                 ?>
  
-                <h1>Member Area</h1>
-                <pThanks for logging in! You are <code><?=$_SESSION['Username']?></code> and your email address is <code>                 <?=$_SESSION['EmailAddress']?></code>.</p>
-      
+                <h2>Account Information</h2>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Thanks for logging in <?php echo $_SESSION['name'] ?>! your email address is <?php echo $_SESSION['email'] ?>.</p>
+                    </div> 
+                </div>
+                <h3>Password change</h3>
+                <form role="form" method="post" action="login.php" name="loginform" id="loginform">
+                    <div class="form-group">
+                        <label for="oldpassword">Old password</label>
+                        <input type="password" class="form-control" name="oldpassword" id="oldpassword" placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label for="newpassword">New password</label>
+                        <input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="New password">
+                    </div>
+                    <div class="form-group">
+                        <label for="newpassword2">Confirm new password</label>
+                        <input type="password" class="form-control" name="newpassword2" id="newpassword2" placeholder="Confirm new password">
+                    </div>
+                    <button type="submit" name="login" value="login" class="btn btn-default">Submit</button>
+                    <div class="row">
+                        <div class="col-md-2">
+                        </div>
+                        <div class="col-md-10">
+                            <p>
+                            <?php 
+                                echo $error_message; 
+                            ?>
+                            </p>
+                        </div>
+                    </div>   
+                </form>
+                
                 <?php
                 }
                 elseif(!empty($_POST['email']) && !empty($_POST['password']))
@@ -88,7 +121,7 @@
                     $db=new database(); 
                     
                     $email = $_POST['email'];
-                    $password = hash('sha256',$_POST['password']);
+                    $password = trim(hash('sha256',$_POST['password']));
      
                     $query= "SELECT * FROM users WHERE email = '".$email."' AND password = '".$password."'";
                     
@@ -98,6 +131,7 @@
                
                     if($row=$db->next_row())
                     {
+                        $uid = $row['uid'];
                         $email = $row['email'];
                         $name = $row['name'];
                         
@@ -105,9 +139,10 @@
                         $_SESSION['name'] = $name;
                         $_SESSION['email'] = $email;
                         $_SESSION['loggedin'] = 1;
+                        $_SESSION['uid'] = $uid;
          
                         echo "<h1>Success</h1>";
-                        echo "<p>Welcome Back ".$name."!</p>";
+                        echo "<p>Welcome Back ".$_SESSION['name']."!</p>";
                      
                     }
                     else
@@ -115,6 +150,22 @@
                     echo "<h1>Error</h1>";
                     echo "<p>Sorry, your account could not be found. Please <a href=\"login.php\">click here to try again</a>.</p>";
                     }
+                }
+                elseif(!empty($_POST['oldpassword']) && !empty($_POST['newpassword']) && !empty($_POST['newpassword2']))
+                {
+                    include("mysqli_class.php");
+                    $db=new database(); 
+                    $password = trim(hash('sha256',$_POST['password']));
+     
+                    $query= "SELECT * FROM users WHERE email = '".$email."' AND password = '".$password."'";
+                    
+                    
+                    $db->send_sql($query);
+                    
+                
+                
+                
+                
                 }
             
                 else
