@@ -77,29 +77,114 @@
                 if(!empty($_SESSION['loggedin']))
                 {
                     $error_message='';
+                    if(!empty($_POST['oldpassword']) && !empty($_POST['newpassword']) && !empty($_POST['newpassword2']))
+                
+                    {
+                        include("mysqli_class.php");
+                        include("dbprop.php");
+                    
+                        $db2 = new mysqli($DB_HOST,$DB_USER,$DB_PASS,$DB_NAME);
+                        $oldpassword = trim(hash('sha256',$_POST['oldpassword']));
+                        $uid=$_SESSION['uid'];
+                        $sql = "SELECT uid,password FROM users WHERE uid = ? AND password =?";
+                  
+                        if (!$stmt = $db2->prepare($sql)) {
+                            echo 'Database prepare error';
+                            exit;
+                        }
+                        $stmt->bind_param('is',$uid,$oldpassword);
+                    
+                        if (!$stmt->execute()) {
+                            echo 'Database execute error';
+                            exit;
+                        }
+                
+                        $stmt->store_result();
+                        $stmt->bind_result($userid,$oldpass);
+                        $stmt->fetch();
+                        $stmt->close();
+                
+                        //if user put in correct old password
+                        if(((strcmp($oldpassword,$oldpass)) == 0) && ($uid == $userid)){
+                            //check new password and new password2 if they are good to go 
+                            //then update users passsword
+                            $newpassword = trim(hash('sha256',$_POST['newpassword']));
+                            $newpassword2 = trim(hash('sha256',$_POST['newpassword2']));
+                            
+                            //if both new passwords match proceed
+                            if((strcmp($newpassword,$newpassword2)) == 0){
+                                 
+                                $re= '/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/';
+                                $p1=trim($_POST['newpassword']);    
+                                if((preg_match($re,$p1)) && (strlen($p1)<16) && (strlen($p1)>5)) 
+                                {
+                                
+                                    $db2 = new mysqli($DB_HOST,$DB_USER,$DB_PASS,$DB_NAME);
+                                    $sql = "UPDATE users SET password = ? WHERE uid = ?";
+                                
+                                    if (!$stmt = $db2->prepare($sql)) {
+                                        echo 'Database prepare error';
+                                        exit;
+                                    }
+                                    $stmt->bind_param('si',$newpassword,$uid);
+                                    if (!$stmt->execute()) {
+                                        echo 'Database execute error';
+                                        exit;
+                                    }
+                                    $stmt->close();
+                                    echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 40px;'>Password has been changed!</p>";
+                                }
+                                else{
+                                    echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 40px;'>Invalid password, please use alphanumeric chars min 6 max 15 chars long! Must contain at least one number and one alphabetical character!</p>";
+                                }
+                            }
+                            else{
+                                
+                            
+                                echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 40px;'>Sorry we could not process your request please try again!</p>";
+                            
+                        
+                            }
+                        }//end if user put in correct old password
+                        //user didnt enter his old password     
+                        else{
+                        
+                            echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 40px;'>Sorry we could not process your request please try again!</p>";    
+                        }
+                    }//end if user is requesting a password change
+                    
+                
+                    else{
+                        
                 ?>
  
-                <h2>Account Information</h2>
-                <div class="row">
+                <h2 style="padding: 0 0 0 40px;">Account Information</h2>
+                <div class="row" style="padding: 0 0 0 40px;">
                     <div class="col-sm-12">
                         <p>Thanks for logging in <?php echo $_SESSION['name'] ?>! your email address is <?php echo $_SESSION['email'] ?>.</p>
                     </div> 
                 </div>
-                <h3>Password change</h3>
+                <h3 style="padding: 0 0 0 40px;">Password change</h3>
                 <form role="form" method="post" action="login.php" name="loginform" id="loginform">
-                    <div class="form-group">
+                    <div class="form-group" style="padding: 0 0 0 40px;">
                         <label for="oldpassword">Old password</label>
-                        <input type="password" class="form-control" name="oldpassword" id="oldpassword" placeholder="Enter password">
+                        <input type="password" class="form-control" name="oldpassword" id="oldpassword" placeholder="Enter password" required style="width: 400px;">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="padding: 0 0 0 40px;">
                         <label for="newpassword">New password</label>
-                        <input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="New password">
+                        <input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="New password" required style="width: 400px;" onkeyup="checkPass(); return false;"><span id="confirmMessage2" class="confirmMessage"></span><p class="help-block" style="width: 400px;">
+                    Min: 6 characters Max: 15 characters (Alphanumeric only, at least one numeric and at least one alphabetic character)
+                    </p>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="padding: 0 0 0 40px;">
                         <label for="newpassword2">Confirm new password</label>
-                        <input type="password" class="form-control" name="newpassword2" id="newpassword2" placeholder="Confirm new password">
+                        <input type="password" class="form-control" name="newpassword2" id="newpassword2" placeholder="Confirm new password" required style="width: 400px;" onkeyup="checkPass(); return false;"><span id="confirmMessage" class="confirmMessage"></span><p class="help-block">
+                        Password reset? <a href= 'resetpass.php'>Click Here</a>
+                        </p>
                     </div>
-                    <button type="submit" name="login" value="login" class="btn btn-default">Submit</button>
+                    <div class="form-group" style="padding: 0 0 0 40px;">
+                        <button type="submit" name="login" value="login" class="btn btn-info">Submit</button>
+                    </div>
                     <div class="row">
                         <div class="col-md-2">
                         </div>
@@ -114,85 +199,82 @@
                 </form>
                 
                 <?php
+                
+                
+                    }
                 }
                 elseif(!empty($_POST['email']) && !empty($_POST['password']))
                 {
-                    include("mysqli_class.php");
-                    $db=new database(); 
+                    
+                    include("dbprop.php");
+                    $db2 = new mysqli($DB_HOST,$DB_USER,$DB_PASS,$DB_NAME);
                     
                     $email = $_POST['email'];
                     $password = trim(hash('sha256',$_POST['password']));
      
-                    $query= "SELECT * FROM users WHERE email = '".$email."' AND password = '".$password."'";
+                    $sql = "SELECT uid,name,email FROM users WHERE email = ? AND password =?";
+                  
+                    if (!$stmt = $db2->prepare($sql)) {
+                        echo 'Database prepare error';
+                        exit;
+                    }
+                    $stmt->bind_param('ss',$email,$password);
                     
-                    
-                    $db->send_sql($query);
-                    
+                    if (!$stmt->execute()) {
+                        echo 'Database execute error';
+                        exit;
+                    }
+                
+                    $stmt->store_result();
+                    $stmt->bind_result($uid,$name,$email);
+                    $stmt->fetch();
+                    $stmt->close();
+                 
                
-                    if($row=$db->next_row())
+                    if((!empty($uid)) && (!empty($name)) && (!empty($email)))
                     {
-                        $uid = $row['uid'];
-                        $email = $row['email'];
-                        $name = $row['name'];
-                        
-         
                         $_SESSION['name'] = $name;
                         $_SESSION['email'] = $email;
                         $_SESSION['loggedin'] = 1;
                         $_SESSION['uid'] = $uid;
          
-                        echo "<h1>Success</h1>";
-                        echo "<p>Welcome Back ".$_SESSION['name']."!</p>";
+                        echo "<br/><br/>";
+                        echo "<p style='padding: 0 0 0 40px;'>Welcome back ".$_SESSION['name']."!</p>";
                      
                     }
                     else
                     {
-                    echo "<h1>Error</h1>";
-                    echo "<p>Sorry, your account could not be found. Please <a href=\"login.php\">click here to try again</a>.</p>";
+                        echo "<br/><br/>";
+                        echo "<p style='padding: 0 0 0 40px;'>Sorry, your account could not be found. Please <a href=\"login.php\">click here to try again</a>.</p>";
                     }
                 }
-                elseif(!empty($_POST['oldpassword']) && !empty($_POST['newpassword']) && !empty($_POST['newpassword2']))
-                {
-                    include("mysqli_class.php");
-                    $db=new database(); 
-                    $password = trim(hash('sha256',$_POST['password']));
-     
-                    $query= "SELECT * FROM users WHERE email = '".$email."' AND password = '".$password."'";
-                    
-                    
-                    $db->send_sql($query);
-                    
-                
-                
-                
-                
-                }
-            
                 else
                 {
                 ?>
+                <h2 style="padding: 0 0 0 40px;">Member Login</h2>
      
-                <h1>Member Login</h1>
-     
-                <p>Thanks for visiting! Please either login below, or <a href="register.php">click here to register</a>.</p>
-     
-               
-    
+                <p style="padding: 0 0 0 40px;">Thanks for visiting! Please either login below or <a href="register.php">click here to register</a>.</p>
+
                 <form role="form" method="post" action="login.php" name="loginform" id="loginform">
-                    <div class="form-group">
+                    <div class="form-group" style="padding: 0 0 0 40px;">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter email">
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter email" style="width: 400px;">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="padding: 0 0 0 40px;">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" style="width: 400px;">
+                        <p class="help-block">
+                        Forgot password? <a href= 'resetpass.php'>Click Here</a>
+                        </p>
                     </div>
-                    <div class="checkbox">
+                    <div class="checkbox" style="padding: 0 0 0 40px;">
                         <label>
                         <input type="checkbox"> Remember Me
                         </label>
                     </div>
-                    <button type="submit" name="login" value="login" class="btn btn-default">Submit</button>
+                    <div class="form-group" style="padding: 0 0 0 40px;">
+                        <button type="submit" name="login" value="login" class="btn btn-info">Submit</button>
+                    </div>
                 </form>
     
                 
@@ -227,8 +309,61 @@
         e.preventDefault();
         $("#sidebar-wrapper").toggleClass("active");
     });
+        
 
- 
+        function checkPass()
+        {
+        
+            //Store the password field objects into variables ...
+        
+            var pass1 = document.getElementById('newpassword');
+        
+            var pass2 = document.getElementById('newpassword2');
+            //Store the Confimation Message Object ...
+            var message = document.getElementById('confirmMessage');
+            var message2 = document.getElementById('confirmMessage2');
+            //Set the colors we will be using ...
+            var goodColor = "#66cc66";
+            var badColor = "#ff6666";
+            
+            //check that password requirement is met
+            //re = /(?=.*[a-zA-Z])(?=.*[0-9]).{6,15}/;
+            re= /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/;
+            
+            //re = /^[a-zA-Z ]+$/;
+            if((pass1.value.length < 6) || (pass1.value.length > 15) || !re.test(pass1.value)){
+                pass1.style.backgroundColor = badColor;
+                message2.style.color = badColor;
+                message2.innerHTML = "Password requirement not met!"
+            
+            }
+            if((pass1.value.length>5) && (pass1.value.length<15) && re.test(pass1.value)){
+                pass1.style.backgroundColor = goodColor;
+                message2.style.color = goodColor;
+                message2.innerHTML = "Password requirement met"
+            }
+
+            //Compare the values in the password field 
+            //and the confirmation field
+            if((pass1.value == pass2.value) && (pass2.value.length > 0)){
+                //The passwords match. 
+                //Set the color to the good color and inform
+                //the user that they have entered the correct password 
+                pass2.style.backgroundColor = goodColor;
+                message.style.color = goodColor;
+                message.innerHTML = "Passwords match"
+            }
+        
+        
+            else if((pass1.value !== pass2.value) && (pass2.value.length > 0)){
+                //The passwords do not match.
+                //Set the color to the bad color and
+                //notify the user.
+                pass2.style.backgroundColor = badColor;
+                message.style.color = badColor;
+                message.innerHTML = "Passwords Do Not Match!"
+            }
+        }  
     </script>
 </html>
 
