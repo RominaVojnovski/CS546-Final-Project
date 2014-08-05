@@ -33,17 +33,14 @@
 
     <!-- Navigation -->
     <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
-    <nav id="sidebar-wrapper">
+      <nav id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
             <li class="sidebar-brand">
                 <a href="../index.html">Pix Gallery</a>
             </li>
             <li>
-                <a href="#">Photos</a>
-            </li>
-            <li>
-                <a href="#">Albums</a>
+                <a href="upalbum.php">Upload</a>
             </li>
             <li>
                 <a href="#">Tags</a>
@@ -55,7 +52,7 @@
                 <a href="#">Search</a>
             </li>
             <li>
-                <a href="../php/login.php">Login/Register</a>
+                <a href="login.php">Login/Register</a>
             </li>
         </ul>
     </nav>
@@ -239,7 +236,7 @@
                         $_SESSION['uid'] = $uid;
          
                         echo "<br/><br/>";
-                        echo "<p style='padding: 0 0 0 40px;'>Welcome back ".$_SESSION['name']."!</p>";
+                        echo "<p style='font-size:30px;padding: 0 0 0 40px;'>Welcome back ".$_SESSION['name']."!</p>";
                      
                     }
                     else
