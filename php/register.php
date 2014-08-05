@@ -64,7 +64,7 @@
     <!-- MAIN AREA OF PAGE-->
     <?php
         $error_message2="";
-        if(!empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['password2']) && !empty($_POST['fullname']))
+        if(!empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['password2']) && !empty($_POST['fullname']) && ($_POST['question1'] != '') && ($_POST['question2'] != '') && ($_POST['question3'] != '') && !empty($_POST['answer1']) && !empty($_POST['answer2']) && !empty($_POST['answer3']))
         {
             
             include("email.php");
@@ -83,6 +83,7 @@
             
             
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+            
             
             if(!empty($_POST['user_profile'])){
                 $profile=filter_var($_POST['user_profile'], FILTER_SANITIZE_STRING);    
@@ -131,6 +132,39 @@
                 $proceed_reg=false;
                 
             }
+            
+            
+            $qid1=$_POST['question1'];
+            $qid2=$_POST['question2'];
+            $qid3=$_POST['question3'];
+            
+            //check all three security questions are different
+            
+            if(($qid1 == $qid2) || ($qid2 == $qid3) || ($qid1 == $qid3)){
+                $proceed_reg=false;
+                $error_message2.="Please choose 3 different questions!";   
+            }
+            
+            
+            $answer1 = filter_var($_POST['answer1'], FILTER_SANITIZE_STRING);
+            $answer2 = filter_var($_POST['answer2'], FILTER_SANITIZE_STRING);
+            $answer3 = filter_var($_POST['answer3'], FILTER_SANITIZE_STRING);
+            
+            //check all three security answers are good input
+            if((strlen(trim($answer1)) == 0) || (strlen(trim($answer2)) == 0) || (strlen(trim($answer3)) == 0))
+            {
+                $proceed_reg=false;
+                $error_message2.="Invalid input, please enter valid answers!";
+            }
+            else{
+                $rex='/[^a-z0-9]/';
+                if((!(ctype_alnum(trim($answer1)))) || (!(ctype_alnum(trim($answer2)))) || (!(ctype_alnum(trim($answer3))))){
+                    $proceed_reg=false;
+                    $error_message2.="Invalid input, please use only alphanumeric characters!";        
+                }
+            }
+            
+            
      
             //if name length less than 5 chars or greater than 50 chars dont proceed the registration
             if(((strlen($fullname))<5) || ((strlen($fullname))>50)){
@@ -182,10 +216,52 @@
                     echo 'Database execute error';
                     exit;
                 }
-                $stmt->close();
+                //$stmt->close();
                    
             
                 $uid=$db->insert_id;
+                
+                //insert data into user_pwd_recovery table total of 3 times for 3 security question/answer 
+                $sql = "INSERT INTO user_pwd_recovery (uid,qid,answer) VALUES (?,?,?)";
+                if (!$stmt = $db->prepare($sql)) {
+                        echo 'Database prepare error';
+                        exit;
+                }
+                
+                $stmt->bind_param('iis',$uid,$qid1,trim($answer1));
+                                  
+                if (!$stmt->execute()) {
+                    echo 'Database execute error';
+                    exit;
+                }
+                
+                $sql = "INSERT INTO user_pwd_recovery (uid,qid,answer) VALUES (?,?,?)";
+                if (!$stmt = $db->prepare($sql)) {
+                        echo 'Database prepare error';
+                        exit;
+                }
+                
+                $stmt->bind_param('iis',$uid,$qid2,trim($answer2));
+                                  
+                if (!$stmt->execute()) {
+                    echo 'Database execute error';
+                    exit;
+                }
+                $sql = "INSERT INTO user_pwd_recovery (uid,qid,answer) VALUES (?,?,?)";
+                if (!$stmt = $db->prepare($sql)) {
+                        echo 'Database prepare error';
+                        exit;
+                }
+                
+                $stmt->bind_param('iis',$uid,$qid3,trim($answer3));
+                                  
+                if (!$stmt->execute()) {
+                    echo 'Database execute error';
+                    exit;
+                }
+                $stmt->close();
+                
+                
                 
                 //send verification email
                 //swift mail library   
@@ -257,16 +333,25 @@
             <textarea class="form-control" name="user_profile" id="user_profile" placeholder="About you" style="width: 400px;"></textarea>
         </div>
         
+        
+        <br/>
+        <div class="form-group" style="font-size: 28px; padding: 0 0 0 40px;">
+            Choose three different questions
+        </div>
+        
+        
+        
+        
         <div class="form-group" style="padding: 0 0 0 40px;">
             <label for="sec-que1">
-            Security Question 1:
+            *Question 1:
             </label>
            
                 <?php include('mysqli_class.php');
                     $db=new database();
                     $query = "SELECT qid,question FROM pwd_recovery_ques";
                     $res=$db->send_sql($query);
-                    echo "<select class='form-control' name='dropdown' style='width: 400px;' value=''><option>-Choose a question-</option>";
+                    echo "<select class='form-control' id='question1' name='question1' required style='width: 300px;'><option value=''>-Choose a question-</option>";
                     while($row = $db->next_row()) {
                         echo "<option value=".$row['qid'].">".$row['question']."</option>"; 
                     }
@@ -277,18 +362,18 @@
             <label for="sec-ans1">
             Answer:
             </label>
-            <input type="text" class="form-control" name="answer1" id="answer1" onkeyup="checkAnswer(); return false;" placeholder="Answer question 1" required style="width: 400px;">
+            <input type="text" class="form-control" name="answer1" id="answer1" maxlength="40" onkeyup="checkAnswer(); return false;" placeholder="alphanumeric characters only" required style="width: 300px;">
         </div>
    
         <div class="form-group" style="padding: 0 0 0 40px;">
             <label for="sec-que2">
-            Security Question 2:
+            *Question 2:
             </label>
                 
                 <?php
                     $query2 = "SELECT qid,question FROM pwd_recovery_ques";
                     $res2=$db->send_sql($query2);
-                    echo "<select class='form-control' name='dropdown' style='width: 400px;' value='' ><option>-Choose a question-</option>";
+                    echo "<select class='form-control' id='question2' name='question2' required style='width: 300px;'><option value=''>-Choose a question-</option>";
                     while($row2 = $db->next_row()) {
                         echo "<option value=".$row2['qid'].">".$row2['question']."</option>"; 
                     }
@@ -299,17 +384,17 @@
             <label for="sec-ans2">
             Answer:
             </label>
-            <input type="text" class="form-control" name="answer2" id="answer2" onkeyup="checkAnswer(); return false;" placeholder="Answer question 2" required style="width: 400px;">
+            <input type="text" class="form-control" name="answer2" id="answer2" maxlength="40" onkeyup="checkAnswer(); return false;" placeholder="alphanumeric characters only" required style="width: 300px;">
         </div>
         <div class="form-group" style="padding: 0 0 0 40px;">
             <label for="sec-que3">
-            Security Question 3:
+            *Question 3:
             </label>
                 
                 <?php
                     $query3 = "SELECT qid,question FROM pwd_recovery_ques";
                     $res3=$db->send_sql($query3);
-                    echo "<select class='form-control' name='dropdown' style='width: 400px;' value=''><option>-Choose a question-</option>";
+                    echo "<select class='form-control' id='question3' name='question3' required style='width: 300px;'><option value=''>-Choose a question-</option>";
                     while($row3 = $db->next_row()) {
                         echo "<option value=".$row3['qid'].">".$row3['question']."</option>"; 
                     }
@@ -321,7 +406,7 @@
             <label for="sec-ans3">
             Answer:
             </label>
-            <input type="text" class="form-control" name="answer3" id="answer3" onkeyup="checkAnswer(); return false;" placeholder="Answer question 3" required style="width: 400px;">
+            <input type="text" class="form-control" name="answer3" id="answer3"  maxlength="40" onkeyup="checkAnswer(); return false;" placeholder="alphanumeric characters only" required style="width: 300px;">
         </div>
     
 
@@ -332,17 +417,13 @@
                 </button>
         </div>
         
-        <div class="row">
-            <div class="col-md-2">
-                &nbsp;
-            </div>
-            <div class="col-md-12">
+        <div class="form-group" style ="font-size: 28px;padding: 0 0 0 40px;">
+            
                 <p>
                     <?php 
                         echo $error_message2; 
                     ?>
                 </p>
-            </div>
         </div>
     </form>
             
