@@ -26,6 +26,27 @@ $(document).ready(function() {
     
 	});
 
+   $("#title").keyup(function(event){
+     //event.preventDefault();
+      var reg = /^[\w' ']+$/;
+      var val =  $(this).val();//String.fromCharCode(event.which);
+      console.log(reg.test(val)+"length :: "+val.length);
+      if(reg.test(val) && val.length>3){
+        console.log("valid"+val);
+
+        $("#title_valid_msg").empty();
+        $(".title-group").removeClass("has-error").addClass('has-success');
+        $("#feedback_icon").removeClass("glyphicon-remove").addClass("glyphicon-ok");
+         
+      }else{
+        console.log(" not valid");
+        $("#title_valid_msg").html("Title should be more than 3 Alphanumeric characters");
+        $(".title-group").removeClass("has-success").addClass('has-error');
+        $("#feedback_icon").addClass("glyphicon-remove").removeClass("glyphicon-ok");      
+       }
+ 
+    });
+
   $("#file_input").change(function(e){
     console.log('onchange called with e=' + e);
     $("#server_msg").text("");
@@ -88,28 +109,20 @@ $(document).ready(function() {
     console.log("submit is clicked");
 		event.preventDefault();
 		if(albumtitle!=""){
-			$("#dialogText").text(albumtitle+" album already exists. Do you want to upload photos in the existing album?");
+			$("#dialogText").text("\""+albumtitle+"\" album already exists. Do you want to upload photos in the existing album?");
 			$( "#dialog" ).dialog( "open" );
 		}else{
       console.log("album title is empty ");
+      var title = $('#title').val();
+      console.log("input title val ::"+title);
+      if(title==""){
+          $("#title_valid_msg").html("Title field is required");
+          $(".title-group").removeClass("has-success").addClass('has-error');
+          $("#feedback_icon").addClass("glyphicon-remove").removeClass("glyphicon-ok"); 
 
-        /*$('form').validate({
-            submitHandler: function (form) {
-                form.submit();
-            }
-        });
-        
-        $("#title").rules("add", {
-            required: true,
-            minlength: 2,
-            messages: {
-                required: "Required input"
-            }
-        });*/
-
-
-
-      submitform();
+      }else{
+         submitform();
+      }
     }
 		
 	});

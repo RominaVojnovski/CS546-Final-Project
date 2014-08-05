@@ -12,7 +12,7 @@
     <title>Upload Album</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="../css/bootstrap.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/stylish-portfolio.css" rel="stylesheet">
     <!-- Custom CSS     -->
 
@@ -100,36 +100,41 @@
           </h3>
         </div>
       </div>
-      <div class="center-block col-lg-12">
-       <form id ="upalbumform" role="form" action="../php/upalbum.php" method="post" enctype="multipart/form-data">
+
+       <form id ="upalbumform" role="form" action="../php/upalbum.php" method="post" enctype="multipart/form-data" class="form-horizontal">
 
 
-              <div class="form-group row">
+              <div class="form-group">
                 <label for="file_input" class="col-md-2">*Upload Images </label>
                 <div class="col-md-8">
-                <input name="file_input[]"  class="btn btn-default" id="file_input" multiple="" webkitdirectory="" type="file" accept="image/*"><br/>
+                <input name="file_input[]"  id="file_input" multiple="" webkitdirectory="" type="file" accept="image/*"><br/>
                 </div>      
               </div>
 
-              <div class="form-group row">
+              <div class="form-group  title-group has-feedback">
                   <label for="title" class="col-md-2">*Album Title</label>
-                  <div class="col-md-8">
-                    <input type="text" id="title" name="title" class="form-control" pattern="[A-Za-z0-9]" 
+                  <div class="col-xs-4">
+                    <input type="text"id="title" name="title" class="form-control" pattern="[A-Za-z0-9]" 
                       {% if title %} 
                         value ="{{ title }}"
                       {% else %}
                         value = ""      
                       {% endif %}
-                    placeholder="Enter album name" autocomplete="on"><br/>
+                    placeholder="Enter album name" autocomplete="on" required>
+                    <span class="glyphicon form-control-feedback" id="feedback_icon"></span>
+                   <span id="title_valid_msg"></span> 
                  </div> 
               </div>
-            <div class="col-md-6">
-              <button class="btn btn-default" name="upload" id ="uploadbtn">Upload</button>
-            </div>
+              <br/>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-md-8">
+                    <button class="btn btn-default" name="upload" id ="uploadbtn">Upload</button>
+                </div>     
+            </div> 
 
       </form>
     <div id="dialog"><div id="dialogText"></div></div>
-</div>
+
 
   </div>
 

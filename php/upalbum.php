@@ -27,36 +27,38 @@
 
         if(is_array($ifileobjs) && count($ifileobjs)>0){
             error_log("\ni am here ::: ".empty($_POST['title'])." title::: ".$_POST['title'], 3, "/var/tmp/my-errors.log");
-            if(empty($_POST['title'])){
-              error_log("\ntitle is not set", 3, "/var/tmp/my-errors.log");
-              echo $twig->render($templatename, array('msg'=>'Album title was empty.'));
-            }
-
-            $album_title = trim($_POST['title']);
-            // Make the directory for user in uploaded directory if not exist.
-            if(!file_exists($uploadsDirectory)){
-              mkdir($uploadsDirectory, 0777, true);
-            }
-
-            $albumpath = $uploadsDirectory.DIRECTORY_SEPARATOR.$album_title;
-            // Check if given album already exists for a loggedin user. 
-            if(!file_exists($albumpath) && !mkdir($albumpath, 0777, true)){
-
-             echo $twig->render($templatename, array('msg'=>'Failed to create folders \" '.$albumpath."\"",'title'=>$album_title)); 
-             
-            }else{
-              
-              $dboperation = new dboperation();
-              if($alm_res = $dboperation->getAlbumObj($album_title,$userid)){
-                 $res_arr = $dboperation->next_res_row($alm_res); 
-                 $albumid = $res_arr['album_id']; 
-              }else{
-                 $albumid= $dboperation->insertAlbum($album_title,$userid,$albumpath); 
+              if(empty($_POST['title'])){
+                error_log("\ntitle is not set", 3, "/var/tmp/my-errors.log");
+                echo $twig->render($templatename, array('msg'=>'Album title was empty.'));
               }
-              // Move the uploaded file to it's new location.  
-              uploadFiles($ifileobjs,$albumpath,$albumid,$dboperation,$twig,$templatename ); 
+            else{
               
-            }
+              $album_title = trim($_POST['title']);
+              // Make the directory for user in uploaded directory if not exist.
+              if(!file_exists($uploadsDirectory)){
+                mkdir($uploadsDirectory, 0777, true);
+              }
+
+              $albumpath = $uploadsDirectory.DIRECTORY_SEPARATOR.$album_title;
+              // Check if given album already exists for a loggedin user. 
+              if(!file_exists($albumpath) && !mkdir($albumpath, 0777, true)){
+
+               echo $twig->render($templatename, array('msg'=>'Failed to create folders \" '.$albumpath."\"",'title'=>$album_title)); 
+               
+              }else{
+                
+                $dboperation = new dboperation();
+                if($alm_res = $dboperation->getAlbumObj($album_title,$userid)){
+                   $res_arr = $dboperation->next_res_row($alm_res); 
+                   $albumid = $res_arr['album_id']; 
+                }else{
+                   $albumid= $dboperation->insertAlbum($album_title,$userid,$albumpath); 
+                }
+                // Move the uploaded file to it's new location.  
+                uploadFiles($ifileobjs,$albumpath,$albumid,$dboperation,$twig,$templatename ); 
+                
+              }
+           } 
          }elseif(is_array($ifileobjs) && count($ifileobjs)==0){
             if(isset($_POST['title']))
                 $album_title = trim($_POST['title']);
