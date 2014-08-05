@@ -81,9 +81,9 @@
                 
                     {
                         include("mysqli_class.php");
-                        include("dbprop.php");
+                        include("../../../dbprop.php");   
                     
-                        $db2 = new mysqli($DB_HOST,$DB_USER,$DB_PASS,$DB_NAME);
+                        $db2 = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
                         $oldpassword = trim(hash('sha256',$_POST['oldpassword']));
                         $uid=$_SESSION['uid'];
                         $sql = "SELECT uid,password FROM users WHERE uid = ? AND password =?";
@@ -119,7 +119,7 @@
                                 if((preg_match($re,$p1)) && (strlen($p1)<16) && (strlen($p1)>5)) 
                                 {
                                 
-                                    $db2 = new mysqli($DB_HOST,$DB_USER,$DB_PASS,$DB_NAME);
+                                    $db2 = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
                                     $sql = "UPDATE users SET password = ? WHERE uid = ?";
                                 
                                     if (!$stmt = $db2->prepare($sql)) {
@@ -206,8 +206,8 @@
                 elseif(!empty($_POST['email']) && !empty($_POST['password']))
                 {
                     
-                    include("dbprop.php");
-                    $db2 = new mysqli($DB_HOST,$DB_USER,$DB_PASS,$DB_NAME);
+                    include("../../../dbprop.php");   
+                    $db2 = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
                     
                     $email = $_POST['email'];
                     $password = trim(hash('sha256',$_POST['password']));

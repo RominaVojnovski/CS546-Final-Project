@@ -68,7 +68,8 @@
         {
             
             include("email.php");
-           	include("../../../dbprop.php");            
+            include("../../../dbprop.php"); 
+            
             
             $proceed_reg=true;
             $goodemail=false;
@@ -90,10 +91,40 @@
             
             
             
-            //goodemail is boolean to check whether valid email or not
+            //goodemail is boolean to check whether valid email address or not
             $goodemail=filter_var($email, FILTER_VALIDATE_EMAIL);
+            
+            //check if password already exists in database
+            if($goodemail){
+                $sql = "SELECT email FROM users WHERE email = ?";
+                if (!$stmt = $db->prepare($sql)) {
+                    echo 'Database prepare error';
+                    exit;
+                }
+                $stmt->bind_param('s',$email);
+                if (!$stmt->execute()) {
+                    echo 'Database execute error';
+                    exit;
+                }
                 
+                $stmt->store_result();
+                $stmt->bind_result($email2);
+                $stmt->fetch();
+                $stmt->close();
+                
+                if((strcmp($email,$email2)) == 0){
+                    $proceed_reg=false;
+                    $error_message2.="You have already registered using this email address! Click <a href='resetpass.php'>Here</a> to reset password.";
+                }
+
+            }
+            else{
+                $proceed_reg=false;
+                $error_message2.="Invalid email address! ";
+            }
            
+            
+            
             //passwords do not match dont proceed the registration
             if((strcmp($p1,$p2))!== 0){
                 $error_message2.="Passwords do not match! ";
@@ -111,19 +142,11 @@
                 $error_message2.="Invalid name, please use only alphabetical characters! ";    
             }
             
-            $pattern = '/(?=.*\d)(?=.*[a-zA-Z]).{6,15}/';
-
-            if (!preg_match($pattern,$p1)){
+            $re= '/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/';
+            if((!preg_match($re,$p1)) || (strlen($p1)>15) || (strlen($p1)<6)){
                 $proceed_reg=false;
                 $error_message2.="Invalid password, please use alphanumeric chars min 6 max 15 chars long! Must contain at least one number and one alphabetical character!";    
-            } 
-            
-            
-            if(!$goodemail){
-                $proceed_reg=false;
-                $error_message2.="Invalid email address! ";
-            } 
-            
+            }  
             
             if($proceed_reg){
                 
@@ -139,13 +162,7 @@
                         echo 'Database prepare error';
                         exit;
                     }
-                    $stmt->bind_param('ssss',$fullname,$password,$email,$profile);
-
-                    if (!$stmt->execute()) {
-                        echo 'Database execute error';
-                        exit;
-                    }
-                    $stmt->close();      
+                    $stmt->bind_param('ssss',$fullname,$password,$email,$profile);     
                 
                 }   
                 else {
@@ -158,13 +175,14 @@
                     }
                     
                     $stmt->bind_param('sss',$fullname,$password,$email);
-
-                    if (!$stmt->execute()) {
-                        echo 'Database execute error';
-                        exit;
-                    }
-                    $stmt->close();
+            
                 }
+                
+                if (!$stmt->execute()) {
+                    echo 'Database execute error';
+                    exit;
+                }
+                $stmt->close();
                    
             
                 $uid=$db->insert_id;
@@ -181,91 +199,144 @@
                 //redirect to complete php page to inform user to check their email 
                 header("Location:complete.php");
                 
-            }//end if post variables are set (not empty)
+            }//end proceed reg
                    
-        }
+        }//end if- post variables are set
 
     ?>
-    
-    <h2>New Registration</h2>
+    <br/>
+    <h2 style="padding: 0 0 0 40px;">Register Here</h2>
     <BR/>
 
     <form role="form" method="post" action="register.php" name="loginform" id="loginform">
-        <div class="form-group">
-        <label for="fullname" class="col-md-2">
+        
+        <div class="form-group" style="padding: 0 0 0 40px;">
+            <label for="fullname">
             *Full Name:
-        </label>
-        <div class="col-md-10">
-            <input type="text" class="form-control" name="fullname" id="fullname" onkeyup="checkName(); return false;" placeholder="Enter Full Name" required><span id="confirmMessage3" class="confirmMessage"></span>
-            <p class="help-block">
+            </label>
+            <input type="text" class="form-control" name="fullname" id="fullname" onkeyup="checkName(); return false;" placeholder="Enter Full Name" required style="width: 400px;"><span id="confirmMessage3" class="confirmMessage"></span>
+            <p class="help-block" style="width: 400px;">
                 Name must be alphabetical characters only between 5 to 50 characters long
             </p>
-            
-        </div>
-        </div>
-
- 
-        <div class="form-group">
-            <label for="email" class="col-md-2">
-            *Email address:
-            </label>
-            <div class="col-md-10">
-                <input type="email" class="form-control" name="email" id="email" placeholder="Enter email address" required>
-                    <p class="help-block">
-                    Example: someone@example.com
-                    </p>
-            </div>
-        </div>
- 
-        <div class="form-group">
-            <label for="password" class="col-md-2">
-            *Password:
-            </label>
-            <div class="col-md-10">
-                <input type="password" class="form-control" name="password" id="password" onkeyup="checkPass(); return false;" placeholder="Enter Password" required><span id="confirmMessage2" class="confirmMessage"></span>
-                    <p class="help-block">
-                    Min: 6 characters Max: 15 characters (Alphanumeric only, at least one numeric and at least one alphabetic character)
-                    </p>
-            </div>
         </div>
         
-        <div class="form-group">
-            <label for="password2" class="col-md-2">
+        <div class="form-group" style="padding: 0 0 0 40px;">
+            <label for="email">
+            *Email address:
+            </label>
+            <input type="email" class="form-control" name="email" id="email" placeholder="Enter email address" required style="width: 400px;">
+            <p class="help-block">
+            Example: someone@example.com
+            </p>
+        </div>
+ 
+        <div class="form-group" style="padding: 0 0 0 40px;">
+            <label for="password">
+            *Password:
+            </label>
+            <input type="password" class="form-control" name="password" id="password" onkeyup="checkPass(); return false;" placeholder="Enter Password" required style="width: 400px;"><span id="confirmMessage2" class="confirmMessage"></span>
+            <p class="help-block" style="width: 400px;">
+                    Min: 6 characters Max: 15 characters (Alphanumeric only, at least one numeric and at least one alphabetic character)
+            </p>
+        </div>
+        
+        <div class="form-group" style="padding: 0 0 0 40px;">
+            <label for="password2">
                 *Password:
             </label>
-            <div class="col-md-10">
-                <input type="password" class="form-control" name="password2" id="password2" onkeyup="checkPass(); return false;" placeholder="Re-enter Password" required><span id="confirmMessage" class="confirmMessage"></span>
-                    <p class="help-block">
-                    Confirm password
-                    </p>
-            </div>
+            <input type="password" class="form-control" name="password2" id="password2" onkeyup="checkPass(); return false;" placeholder="Re-enter Password" required style="width: 400px;"><span id="confirmMessage" class="confirmMessage"></span>
+            <p class="help-block">
+                Confirm password
+            </p>
         </div>
 
-        <div class="form-group">
-            <label for="user_profile" class="col-md-2">
+        <div class="form-group" style="padding: 0 0 0 40px;">
+            <label for="user_profile">
             User Profile (optional):
             </label>
-            <div class="col-md-10">
-                <textarea class="form-control" name="user_profile" id="user_profile" placeholder="About you"></textarea>
-            </div>
+            <textarea class="form-control" name="user_profile" id="user_profile" placeholder="About you" style="width: 400px;"></textarea>
         </div>
+        
+        <div class="form-group" style="padding: 0 0 0 40px;">
+            <label for="sec-que1">
+            Security Question 1:
+            </label>
+           
+                <?php include('mysqli_class.php');
+                    $db=new database();
+                    $query = "SELECT qid,question FROM pwd_recovery_ques";
+                    $res=$db->send_sql($query);
+                    echo "<select class='form-control' name='dropdown' style='width: 400px;' value=''><option>-Choose a question-</option>";
+                    while($row = $db->next_row()) {
+                        echo "<option value=".$row['qid'].">".$row['question']."</option>"; 
+                    }
+                    echo "</select>";
+                    ?>    
+        </div>       
+        <div class="form-group" style ="padding: 0 0 0 40px;">
+            <label for="sec-ans1">
+            Answer:
+            </label>
+            <input type="text" class="form-control" name="answer1" id="answer1" onkeyup="checkAnswer(); return false;" placeholder="Answer question 1" required style="width: 400px;">
+        </div>
+   
+        <div class="form-group" style="padding: 0 0 0 40px;">
+            <label for="sec-que2">
+            Security Question 2:
+            </label>
+                
+                <?php
+                    $query2 = "SELECT qid,question FROM pwd_recovery_ques";
+                    $res2=$db->send_sql($query2);
+                    echo "<select class='form-control' name='dropdown' style='width: 400px;' value='' ><option>-Choose a question-</option>";
+                    while($row2 = $db->next_row()) {
+                        echo "<option value=".$row2['qid'].">".$row2['question']."</option>"; 
+                    }
+                    echo "</select>";
+                    ?>
+        </div>
+         <div class="form-group" style ="padding: 0 0 0 40px;">
+            <label for="sec-ans2">
+            Answer:
+            </label>
+            <input type="text" class="form-control" name="answer2" id="answer2" onkeyup="checkAnswer(); return false;" placeholder="Answer question 2" required style="width: 400px;">
+        </div>
+        <div class="form-group" style="padding: 0 0 0 40px;">
+            <label for="sec-que3">
+            Security Question 3:
+            </label>
+                
+                <?php
+                    $query3 = "SELECT qid,question FROM pwd_recovery_ques";
+                    $res3=$db->send_sql($query3);
+                    echo "<select class='form-control' name='dropdown' style='width: 400px;' value=''><option>-Choose a question-</option>";
+                    while($row3 = $db->next_row()) {
+                        echo "<option value=".$row3['qid'].">".$row3['question']."</option>"; 
+                    }
+                    echo "</select>";
+                    ?>
+        </div>
+         
+        <div class="form-group" style ="padding: 0 0 0 40px;">
+            <label for="sec-ans3">
+            Answer:
+            </label>
+            <input type="text" class="form-control" name="answer3" id="answer3" onkeyup="checkAnswer(); return false;" placeholder="Answer question 3" required style="width: 400px;">
+        </div>
+    
 
-      
- 
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-10">
+        <div class="form-group" style ="padding: 0 0 0 40px;">
+            
                 <button type="submit" class="btn btn-info">
                    Register
                 </button>
-            </div>
         </div>
         
         <div class="row">
             <div class="col-md-2">
+                &nbsp;
             </div>
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <p>
                     <?php 
                         echo $error_message2; 
