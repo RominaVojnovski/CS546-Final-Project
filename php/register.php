@@ -228,7 +228,7 @@
                         exit;
                 }
                 
-                $stmt->bind_param('iis',$uid,$qid1,trim($answer1));
+                $stmt->bind_param('iis',$uid,$qid1,strtolower(trim($answer1)));
                                   
                 if (!$stmt->execute()) {
                     echo 'Database execute error';
@@ -241,7 +241,7 @@
                         exit;
                 }
                 
-                $stmt->bind_param('iis',$uid,$qid2,trim($answer2));
+                $stmt->bind_param('iis',$uid,$qid2,strtolower(trim($answer2)));
                                   
                 if (!$stmt->execute()) {
                     echo 'Database execute error';
@@ -253,7 +253,7 @@
                         exit;
                 }
                 
-                $stmt->bind_param('iis',$uid,$qid3,trim($answer3));
+                $stmt->bind_param('iis',$uid,$qid3,strtolower(trim($answer3)));
                                   
                 if (!$stmt->execute()) {
                     echo 'Database execute error';
@@ -493,7 +493,7 @@
             re= /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/;
             
             //re = /^[a-zA-Z ]+$/;
-            if((pass1.value.length < 6) || (pass1.value.length > 15) || !re.test(pass1.value)){
+            if((pass1.value.length < 6) || (pass1.value.length > 15) || !re.test(pass1.value))             {
                 pass1.style.backgroundColor = badColor;
                 message2.style.color = badColor;
                 message2.innerHTML = "Password requirement not met!"

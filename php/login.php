@@ -242,7 +242,7 @@
                     else
                     {
                         echo "<br/><br/>";
-                        echo "<p style='padding: 0 0 0 40px;'>Sorry, your account could not be found. Please <a href=\"login.php\">click here to try again</a>.</p>";
+                        echo "<p style='font-size:30px;padding: 0 0 0 40px;'>Sorry, you entered the wrong combination. Please <a href=\"login.php\">click here to try again</a>.</p>";
                     }
                 }
                 else
