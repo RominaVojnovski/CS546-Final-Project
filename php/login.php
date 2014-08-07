@@ -161,6 +161,12 @@
                         <p>Thanks for logging in <?php echo $_SESSION['name'] ?>! your email address is <?php echo $_SESSION['email'] ?>.</p>
                     </div> 
                 </div>
+                
+                <div class="row" style="padding: 0 0 0 40px;">
+                    <div class="col-sm-12">
+                        <p>Click <a href='logout.php?id=<?php echo $_SESSION['uid'] ?>'>here </a>to logout.</p>
+                    </div> 
+                </div>
                 <h3 style="padding: 0 0 0 40px;">Password change</h3>
                 <form role="form" method="post" action="login.php" name="loginform" id="loginform">
                     <div class="form-group" style="padding: 0 0 0 40px;">
@@ -200,6 +206,7 @@
                 
                     }
                 }
+
                 elseif(!empty($_POST['email']) && !empty($_POST['password']))
                 {
                     

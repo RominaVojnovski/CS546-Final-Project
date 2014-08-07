@@ -63,6 +63,19 @@
     
     <!-- MAIN AREA OF PAGE-->
     <?php
+        function curPageDIR() {
+            $isHTTPS = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on");
+            $port = (isset($_SERVER["SERVER_PORT"]) && ((!$isHTTPS && $_SERVER["SERVER_PORT"] != "80") || ($isHTTPS && $_SERVER["SERVER_PORT"] != "443")));
+            $port = ($port) ? ':'.$_SERVER["SERVER_PORT"] : '';
+            $url = ($isHTTPS ? 'https://' : 'http://').$_SERVER["SERVER_NAME"].$port.$_SERVER["REQUEST_URI"];
+            //take out the last part after /
+            $pos = strrpos($url, '/');
+            
+            $url2=substr($url,0,$pos+1);
+            return $url2;
+        }
+
+
         $error_message2="";
         if(!empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['password2']) && !empty($_POST['fullname']) && ($_POST['question1'] != '') && ($_POST['question2'] != '') && ($_POST['question3'] != '') && !empty($_POST['answer1']) && !empty($_POST['answer2']) && !empty($_POST['answer3']))
         {
@@ -157,7 +170,6 @@
                 $error_message2.="Invalid input, please enter valid answers!";
             }
             else{
-                $rex='/[^a-z0-9]/';
                 if((!(ctype_alnum(trim($answer1)))) || (!(ctype_alnum(trim($answer2)))) || (!(ctype_alnum(trim($answer3))))){
                     $proceed_reg=false;
                     $error_message2.="Invalid input, please use only alphanumeric characters!";        
@@ -187,28 +199,31 @@
                  //hashed password
                 $password = hash('sha256',$p1);
  
-                //user has entered data in profile field....
+                //create activation code for user
+                $activation = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 12);
                 
+                
+                //user has entered data in profile field....
                 if(!empty($profile)){
-                    $sql = "INSERT INTO users (name,password,email,user_profile) VALUES (?,?,?,?)";
+                    $sql = "INSERT INTO users (name,password,email,user_profile,activation) VALUES (?,?,?,?,?)";
                 
                     if (!$stmt = $db->prepare($sql)) {
                         echo 'Database prepare error';
                         exit;
                     }
-                    $stmt->bind_param('ssss',$fullname,$password,$email,$profile);     
+                    $stmt->bind_param('sssss',$fullname,$password,$email,$profile,$activation);     
                 
                 }   
                 else {
                     
-                    $sql = "INSERT INTO users (name,password,email) VALUES (?,?,?)";
+                    $sql = "INSERT INTO users (name,password,email,activation) VALUES (?,?,?,?)";
                     
                     if (!$stmt = $db->prepare($sql)) {
                         echo 'Database prepare error';
                         exit;
                     }
                     
-                    $stmt->bind_param('sss',$fullname,$password,$email);
+                    $stmt->bind_param('ssss',$fullname,$password,$email,$activation);
             
                 }
                 
@@ -262,15 +277,15 @@
                 $stmt->close();
                 
                 
-                
+                $link=curPageDIR().'verify.php?activation='.$activation.'&email='.$email;
                 //send verification email
                 //swift mail library   
                 $mailer = Swift_Mailer::newInstance($transport);
 
-                $message = Swift_Message::newInstance('Test Subject')
+                $message = Swift_Message::newInstance('Pix Gallery Registration')
                         ->setFrom(array('pixgalleryweb@gmail.com' => 'admin'))
                         ->setTo(array($email))
-                        ->setBody('This is a test mail.');
+                        ->setBody('Thanks for signing up. Please click on the link to confirm your registration: '.$link);
                 $result = $mailer->send($message);    
                 //redirect to complete php page to inform user to check their email 
                 header("Location:complete.php");
@@ -422,6 +437,7 @@
                 <p>
                     <?php 
                         echo $error_message2; 
+                    
                     ?>
                 </p>
         </div>
