@@ -326,7 +326,9 @@
                 else{
                     ?>
                     <br/>
-                    <h2 style="padding: 0 0 0 40px;">Sorry the answers you provided are incorrect!</h2>
+                    <h2 style="padding: 0 0 0 40px;">Sorry the answers you provided are incorrect.</h2> 
+                    <h3 style="padding: 0 0 0 40px;">Still need help?</h3>
+                    <h4 style="padding: 0 0 0 40px;">Send us an <a href="mailto:pixgalleryweb@gmail.com?Subject=Pix%20Gallery%20account%20inquiry" target="_top">email.</a></h4>
                     <?php
                 }
             
