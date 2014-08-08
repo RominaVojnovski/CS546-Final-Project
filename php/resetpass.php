@@ -115,7 +115,7 @@
     
     ?>
     <br/>
-    <h2 style="padding: 0 0 0 40px;">Security Questions</h2>
+    <h2 style="padding: 0 0 0 100px;">Security Questions</h2>
     <br/>
 
     <form role="form" method="post" action="resetpass.php" name="loginform" id="loginform">
@@ -128,30 +128,30 @@
         <input type="hidden" id="uid" name="uid" value="<?php echo $uid ?>">
         
         
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="sec-que1">
             <?php echo $ques[0]; ?>
             </label>
             <input type="text" class="form-control" name="answer1" id="answer1" placeholder="Answer" required style="width: 300px;">
         </div>
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="sec-que2">
             <?php echo $ques[1]; ?>
             </label>
             <input type="text" class="form-control" name="answer2" id="answer2" placeholder="Answer" required style="width: 300px;">
         </div>
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="sec-que3">
             <?php echo $ques[2]; ?>
             </label>
             <input type="text" class="form-control" name="answer3" id="answer3" placeholder="Answer" required style="width: 300px;">
         </div>
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <button type="submit" class="btn btn-info">
                 Reset
             </button>
         </div>
-        <div class="form-group" style ="font-size: 28px;padding: 0 0 0 40px;">
+        <div class="form-group" style ="font-size: 28px;padding: 0 0 0 100px;">
             <p>
                 <?php 
                     echo $error_message; 
@@ -172,7 +172,7 @@
                 ?>
     
                 <br/>
-                <h2 style="padding: 0 0 0 40px;">Sorry you have not registered with that email address!</h2>
+                <h2 style="padding: 0 0 0 100px;">Sorry you have not registered with that email address!</h2>
                 <?php
     
     
@@ -319,16 +319,16 @@
     
                     ?>
                     <br/>
-                    <h2 style="padding: 0 0 0 40px;">Please check your email for a temporary password!</h2>
+                    <h2 style="padding: 0 0 0 100px;">Please check your email for a temporary password!</h2>
                     <?php
                 }
                 //answers did not match up
                 else{
                     ?>
                     <br/>
-                    <h2 style="padding: 0 0 0 40px;">Sorry the answers you provided are incorrect.</h2> 
-                    <h3 style="padding: 0 0 0 40px;">Still need help?</h3>
-                    <h4 style="padding: 0 0 0 40px;">Send us an <a href="mailto:pixgalleryweb@gmail.com?Subject=Pix%20Gallery%20account%20inquiry" target="_top">email.</a></h4>
+                    <h2 style="padding: 0 0 0 100px;">Sorry the answers you provided are incorrect.</h2> 
+                    <h3 style="padding: 0 0 0 100px;">Still need help?</h3>
+                    <h4 style="padding: 0 0 0 100px;">Send us an <a href="mailto:pixgalleryweb@gmail.com?Subject=Pix%20Gallery%20account%20inquiry" target="_top">email.</a></h4>
                     <?php
                 }
             
@@ -337,7 +337,7 @@
                 ?>
     
                 <br/>
-                <h2 style="padding: 0 0 0 40px;">Sorry we could not process your request use only alphanumeric characters!</h2>
+                <h2 style="padding: 0 0 0 100px;">Sorry we could not process your request use only alphanumeric characters!</h2>
                 <?php
             }
         }//end if POST[answer1]...POST[answer3]
@@ -350,11 +350,11 @@
     
     
     <br/>
-    <h2 style="padding: 0 0 0 40px;">Reset Password</h2>
+    <h2 style="padding: 0 0 0 100px;">Reset Password</h2>
     <BR/>
 
     <form role="form" method="post" action="resetpass.php" name="loginform" id="loginform">
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="fullname">
             *Email:
             </label>
@@ -364,13 +364,13 @@
             </p>
         </div>
  
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
                 <button type="submit" class="btn btn-info">
                    Find account
                 </button>
         </div>
         
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
                 <p class="help-block">
                     <?php 
                         echo $error_message; 

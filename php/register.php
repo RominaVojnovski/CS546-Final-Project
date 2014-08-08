@@ -293,68 +293,68 @@
 
     ?>
     <br/>
-    <h2 style="padding: 0 0 0 40px;">Register Here</h2>
+    <h2 style="padding: 0 0 0 100px;">Register Here</h2>
     <BR/>
 
     <form role="form" method="post" action="register.php" name="loginform" id="loginform">
         
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="fullname">
             *Full Name:
             </label>
-            <input type="text" class="form-control" name="fullname" id="fullname" onkeyup="checkName(); return false;" placeholder="Enter Full Name" required style="width: 400px;"><span id="confirmMessage3" class="confirmMessage"></span>
-            <p class="help-block" style="width: 400px;">
+            <input type="text" class="form-control" name="fullname" id="fullname" onkeyup="checkName(); return false;" placeholder="Enter Full Name" required style="width: 300px;"><span id="confirmMessage3" class="confirmMessage"></span>
+            <p class="help-block" style="width: 300px;">
                 Name must be alphabetical characters only between 5 to 50 characters long
             </p>
         </div>
         
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="email">
             *Email address:
             </label>
-            <input type="email" class="form-control" name="email" id="email" placeholder="Enter email address" required style="width: 400px;">
+            <input type="email" class="form-control" name="email" id="email" placeholder="Enter email address" required style="width: 300px;">
             <p class="help-block">
             Example: someone@example.com
             </p>
         </div>
  
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="password">
             *Password:
             </label>
-            <input type="password" class="form-control" name="password" id="password" onkeyup="checkPass(); return false;" placeholder="Enter Password" required style="width: 400px;"><span id="confirmMessage2" class="confirmMessage"></span>
-            <p class="help-block" style="width: 400px;">
+            <input type="password" class="form-control" name="password" id="password" onkeyup="checkPass(); return false;" placeholder="Enter Password" required style="width: 300px;"><span id="confirmMessage2" class="confirmMessage"></span>
+            <p class="help-block" style="width: 300px;">
                     Min: 6 characters Max: 15 characters (Alphanumeric only, at least one numeric and at least one alphabetic character)
             </p>
         </div>
         
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="password2">
                 *Password:
             </label>
-            <input type="password" class="form-control" name="password2" id="password2" onkeyup="checkPass(); return false;" placeholder="Re-enter Password" required style="width: 400px;"><span id="confirmMessage" class="confirmMessage"></span>
+            <input type="password" class="form-control" name="password2" id="password2" onkeyup="checkPass(); return false;" placeholder="Re-enter Password" required style="width: 300px;"><span id="confirmMessage" class="confirmMessage"></span>
             <p class="help-block">
                 Confirm password
             </p>
         </div>
 
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="user_profile">
             User Profile (optional):
             </label>
-            <textarea class="form-control" name="user_profile" id="user_profile" placeholder="About you" style="width: 400px;"></textarea>
+            <textarea class="form-control" name="user_profile" id="user_profile" placeholder="About you" style="width: 300px;"></textarea>
         </div>
         
         
         <br/>
-        <div class="form-group" style="font-size: 28px; padding: 0 0 0 40px;">
+        <div class="form-group" style="font-size: 28px; padding: 0 0 0 100px;">
             Choose three different questions
         </div>
         
         
         
         
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="sec-que1">
             *Question 1:
             </label>
@@ -370,14 +370,14 @@
                     echo "</select>";
                     ?>    
         </div>       
-        <div class="form-group" style ="padding: 0 0 0 40px;">
+        <div class="form-group" style ="padding: 0 0 0 100px;">
             <label for="sec-ans1">
             Answer:
             </label>
             <input type="text" class="form-control" name="answer1" id="answer1" maxlength="40" onkeyup="checkAnswer(); return false;" placeholder="alphanumeric characters only" required style="width: 300px;">
         </div>
    
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="sec-que2">
             *Question 2:
             </label>
@@ -392,13 +392,13 @@
                     echo "</select>";
                     ?>
         </div>
-         <div class="form-group" style ="padding: 0 0 0 40px;">
+         <div class="form-group" style ="padding: 0 0 0 100px;">
             <label for="sec-ans2">
             Answer:
             </label>
             <input type="text" class="form-control" name="answer2" id="answer2" maxlength="40" onkeyup="checkAnswer(); return false;" placeholder="alphanumeric characters only" required style="width: 300px;">
         </div>
-        <div class="form-group" style="padding: 0 0 0 40px;">
+        <div class="form-group" style="padding: 0 0 0 100px;">
             <label for="sec-que3">
             *Question 3:
             </label>
@@ -414,7 +414,7 @@
                     ?>
         </div>
          
-        <div class="form-group" style ="padding: 0 0 0 40px;">
+        <div class="form-group" style ="padding: 0 0 0 100px;">
             <label for="sec-ans3">
             Answer:
             </label>
@@ -422,14 +422,14 @@
         </div>
     
 
-        <div class="form-group" style ="padding: 0 0 0 40px;">
+        <div class="form-group" style ="padding: 0 0 0 100px;">
             
                 <button type="submit" class="btn btn-info">
                    Register
                 </button>
         </div>
         
-        <div class="form-group" style ="font-size: 28px;padding: 0 0 0 40px;">
+        <div class="form-group" style ="font-size: 28px;padding: 0 0 0 100px;">
             
                 <p>
                     <?php 

@@ -129,16 +129,16 @@
                                         exit;
                                     }
                                     $stmt->close();
-                                    echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 40px;'>Password has been changed!</p>";
+                                    echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 100px;'>Password has been changed!</p>";
                                 }
                                 else{
-                                    echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 40px;'>Invalid password, please use alphanumeric chars min 6 max 15 chars long! Must contain at least one number and one alphabetical character!</p>";
+                                    echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 100px;'>Invalid password, please use alphanumeric chars min 6 max 15 chars long! Must contain at least one number and one alphabetical character!</p>";
                                 }
                             }
                             else{
                                 
                             
-                                echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 40px;'>Sorry we could not process your request please try again!</p>";
+                                echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 100px;'>Sorry we could not process your request please try again!</p>";
                             
                         
                             }
@@ -146,7 +146,7 @@
                         //user didnt enter his old password     
                         else{
                         
-                            echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 40px;'>Sorry we could not process your request please try again!</p>";    
+                            echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 100px;'>Sorry we could not process your request please try again!</p>";    
                         }
                     }//end if user is requesting a password change
                     
@@ -155,8 +155,8 @@
                         
                 ?>
  
-                <h2 style="padding: 0 0 0 40px;">Account Information</h2>
-                <div class="row" style="padding: 0 0 0 40px;">
+                <h2 style="padding: 0 0 0 100px;">Account Information</h2>
+                <div class="row" style="padding: 0 0 0 100px;">
                     <div class="col-sm-12">
                         <p>Thanks for logging in <?php echo $_SESSION['name'] ?>! your email address is <?php echo $_SESSION['email'] ?>.</p>
                     </div> 
@@ -169,7 +169,7 @@
                 {
                     
                     ?>
-                    <div class="row" style="padding: 0 0 0 40px;">
+                    <div class="row" style="padding: 0 0 0 100px;">
                         <div class="col-sm-12">
                             <p>You have not confirmed registration yet please check your email.</p>
                         </div> 
@@ -178,30 +178,30 @@
                 }
                         ?>
                     
-                <div class="row" style="padding: 0 0 0 40px;">
+                <div class="row" style="padding: 0 0 0 100px;">
                     <div class="col-sm-12">
                         <p>Click <a href='logout.php?id=<?php echo $_SESSION['uid'] ?>'>here </a>to logout.</p>
                     </div> 
                 </div>
-                <h3 style="padding: 0 0 0 40px;">Password change</h3>
+                <h3 style="padding: 0 0 0 100px;">Password change</h3>
                 <form role="form" method="post" action="login.php" name="loginform" id="loginform">
-                    <div class="form-group" style="padding: 0 0 0 40px;">
+                    <div class="form-group" style="padding: 0 0 0 100px;">
                         <label for="oldpassword">Old password</label>
                         <input type="password" class="form-control" name="oldpassword" id="oldpassword" placeholder="Enter password" required style="width: 400px;">
                     </div>
-                    <div class="form-group" style="padding: 0 0 0 40px;">
+                    <div class="form-group" style="padding: 0 0 0 100px;">
                         <label for="newpassword">New password</label>
                         <input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="New password" required style="width: 400px;" onkeyup="checkPass(); return false;"><span id="confirmMessage2" class="confirmMessage"></span><p class="help-block" style="width: 400px;">
                     Min: 6 characters Max: 15 characters (Alphanumeric only, at least one numeric and at least one alphabetic character)
                     </p>
                     </div>
-                    <div class="form-group" style="padding: 0 0 0 40px;">
+                    <div class="form-group" style="padding: 0 0 0 100px;">
                         <label for="newpassword2">Confirm new password</label>
                         <input type="password" class="form-control" name="newpassword2" id="newpassword2" placeholder="Confirm new password" required style="width: 400px;" onkeyup="checkPass(); return false;"><span id="confirmMessage" class="confirmMessage"></span><p class="help-block">
                         Password reset? <a href= 'resetpass.php'>Click Here</a>
                         </p>
                     </div>
-                    <div class="form-group" style="padding: 0 0 0 40px;">
+                    <div class="form-group" style="padding: 0 0 0 100px;">
                         <button type="submit" name="login" value="login" class="btn btn-info">Submit</button>
                     </div>
                     <div class="row">
@@ -260,40 +260,42 @@
                         $_SESSION['confirmed']= $confdate;
          
                         echo "<br/><br/>";
-                        echo "<p style='font-size:30px;padding: 0 0 0 40px;'>Welcome back ".$_SESSION['name']."!</p>";
+                        echo "<p style='font-size:30px;padding: 0 0 0 100px;'>Welcome back ".$_SESSION['name']."!</p>";
                      
                     }
                     else
                     {
                         echo "<br/><br/>";
-                        echo "<p style='font-size:30px;padding: 0 0 0 40px;'>Sorry, you entered the wrong combination. Please <a href=\"login.php\">click here to try again</a>.</p>";
+                        echo "<p style='font-size:30px;padding: 0 0 0 100px;'>Sorry, you entered the wrong combination. Please <a href=\"login.php\">click here to try again</a>.</p>";
                     }
                 }
                 else
                 {
                 ?>
-                <h2 style="padding: 0 0 0 40px;">Member Login</h2>
+                <h2 style="padding: 0 0 0 100px;">Member Login</h2>
      
-                <p style="padding: 0 0 0 40px;">Thanks for visiting! Please either login below or <a href="register.php">click here to register</a>.</p>
-
+                <p style="padding: 0 0 0 100px;">Thanks for visiting! Please either login below or <a href="register.php">click here to register</a>.</p>
+                
+              
                 <form role="form" method="post" action="login.php" name="loginform" id="loginform">
-                    <div class="form-group" style="padding: 0 0 0 40px;">
+                    <br/>
+                    <div class="form-group" style="padding: 0 0 0 100px;">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter email" style="width: 400px;">
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter email" style="width: 300px;">
                     </div>
-                    <div class="form-group" style="padding: 0 0 0 40px;">
+                    <div class="form-group" style="padding: 0 0 0 100px;">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" style="width: 400px;">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" style="width: 300px;">
                         <p class="help-block">
                         Forgot password? <a href= 'resetpass.php'>Click Here</a>
                         </p>
                     </div>
-                    <div class="checkbox" style="padding: 0 0 0 40px;">
+                    <div class="checkbox" style="padding: 0 0 0 100px;">
                         <label>
                         <input type="checkbox"> Remember Me
                         </label>
                     </div>
-                    <div class="form-group" style="padding: 0 0 0 40px;">
+                    <div class="form-group" style="padding: 0 0 0 100px;">
                         <button type="submit" name="login" value="login" class="btn btn-info">Submit</button>
                     </div>
                 </form>
