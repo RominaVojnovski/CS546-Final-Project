@@ -162,6 +162,22 @@
                     </div> 
                 </div>
                 
+                <?php
+                
+                //user has not cofirmed registration if when_confirmed Session var is NULL    
+                if(empty(($_SESSION['confirmed'])))
+                {
+                    
+                    ?>
+                    <div class="row" style="padding: 0 0 0 40px;">
+                        <div class="col-sm-12">
+                            <p>You have not confirmed registration yet please check your email.</p>
+                        </div> 
+                    </div>
+                    <?php
+                }
+                        ?>
+                    
                 <div class="row" style="padding: 0 0 0 40px;">
                     <div class="col-sm-12">
                         <p>Click <a href='logout.php?id=<?php echo $_SESSION['uid'] ?>'>here </a>to logout.</p>
@@ -216,7 +232,7 @@
                     $email = $_POST['email'];
                     $password = trim(hash('sha256',$_POST['password']));
      
-                    $sql = "SELECT uid,name,email FROM users WHERE email = ? AND password =?";
+                    $sql = "SELECT uid,name,email,when_confirmed FROM users WHERE email = ? AND password =?";
                   
                     if (!$stmt = $db2->prepare($sql)) {
                         echo 'Database prepare error';
@@ -230,7 +246,7 @@
                     }
                 
                     $stmt->store_result();
-                    $stmt->bind_result($uid,$name,$email);
+                    $stmt->bind_result($uid,$name,$email,$confdate);
                     $stmt->fetch();
                     $stmt->close();
                  
@@ -241,6 +257,7 @@
                         $_SESSION['email'] = $email;
                         $_SESSION['loggedin'] = 1;
                         $_SESSION['uid'] = $uid;
+                        $_SESSION['confirmed']= $confdate;
          
                         echo "<br/><br/>";
                         echo "<p style='font-size:30px;padding: 0 0 0 40px;'>Welcome back ".$_SESSION['name']."!</p>";
