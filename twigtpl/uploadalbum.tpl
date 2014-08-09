@@ -30,7 +30,7 @@
 
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
+        <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -39,23 +39,32 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Pix Gallery</a>
+                <a class="navbar-brand" href="../index.html">PixGallery</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">Home</a>
+                        <a href="../php/home.php">Home</a>
                     </li>
                     <li>
                         <a href="../php/upalbum.php">Upload</a>
                     </li>
                     <li>
-                        <a href="#">Setting</a>
+                        <a href="#">Tags</a>
+                    </li> 
+                    <li>
+                        <a href="#">Search</a>
                     </li>    
                     <li>
-                        <a href="#">Logout</a>
+                        <a href="../php/logout.php">Logout</a>
                     </li>
+  
+                </ul>
+                 <ul class="nav navbar-nav  navbar-right">
+                    <li> 
+                        <a class="text-info" href="login.php"><strong>Welcome {{uname}}</strong></a>
+                    </li>                
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -104,14 +113,14 @@
        <form id ="upalbumform" role="form" action="../php/upalbum.php" method="post" enctype="multipart/form-data" class="form-horizontal">
 
 
-              <div class="form-group">
+              <div class="form-group form-group-sm">
                 <label for="file_input" class="col-md-2">*Upload Images </label>
                 <div class="col-md-8">
                 <input name="file_input[]"  id="file_input" multiple="" webkitdirectory="" type="file" accept="image/*"><br/>
                 </div>      
               </div>
 
-              <div class="form-group  title-group has-feedback">
+              <div class="form-group  title-group has-feedback form-group-sm">
                   <label for="title" class="col-md-2">*Album Title</label>
                   <div class="col-xs-4">
                     <input type="text"id="title" name="title" class="form-control" pattern="[A-Za-z0-9]" 
@@ -128,7 +137,7 @@
               <br/>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-md-8">
-                    <button class="btn btn-default" name="upload" id ="uploadbtn">Upload</button>
+                    <button class="btn btn-info" name="upload" id ="uploadbtn">Upload</button>
                 </div>     
             </div> 
 
@@ -143,7 +152,7 @@
 
     <!-- Bootstrap Core JavaScript -->
     <!-- script src="../js/bootstrap.min.js"></script -->
-
+  <script src="../js/bootstrap.min.js"></script>
   <script src="../js/uploadalbum.js"></script>
   <script src="../js/jquery-ui.js"></script>
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /> 

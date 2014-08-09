@@ -259,8 +259,11 @@
                         $_SESSION['uid'] = $uid;
                         $_SESSION['confirmed']= $confdate;
          
-                        echo "<br/><br/>";
-                        echo "<p style='font-size:30px;padding: 0 0 0 100px;'>Welcome back ".$_SESSION['name']."!</p>";
+                        /*echo "<br/><br/>";
+                        
+                        echo "<p style='font-size:30px;padding: 0 0 0 100px;'>Welcome back ".$_SESSION['name']."!</p>";*/
+                        //Redirect user to home/gallery page
+                        header("location:home.php");
                      
                     }
                     else

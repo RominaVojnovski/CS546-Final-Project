@@ -28,7 +28,7 @@ $(document).ready(function() {
 
    $("#title").keyup(function(event){
      //event.preventDefault();
-      var reg = /^[\w' ']+$/;
+      var reg = /^[\w' '\-]+$/;
       var val =  $(this).val();//String.fromCharCode(event.which);
       console.log(reg.test(val)+"length :: "+val.length);
       if(reg.test(val) && val.length>3){
@@ -40,7 +40,7 @@ $(document).ready(function() {
          
       }else{
         console.log(" not valid");
-        $("#title_valid_msg").html("Title should be more than 3 Alphanumeric characters");
+        $("#title_valid_msg").html("Album title should be more than 3 Alphanumeric characters");
         $(".title-group").removeClass("has-success").addClass('has-error');
         $("#feedback_icon").addClass("glyphicon-remove").removeClass("glyphicon-ok");      
        }
@@ -116,7 +116,7 @@ $(document).ready(function() {
       var title = $('#title').val();
       console.log("input title val ::"+title);
       if(title==""){
-          $("#title_valid_msg").html("Title field is required");
+          $("#title_valid_msg").html("Album title field is required");
           $(".title-group").removeClass("has-success").addClass('has-error');
           $("#feedback_icon").addClass("glyphicon-remove").removeClass("glyphicon-ok"); 
 

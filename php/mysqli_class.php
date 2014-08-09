@@ -94,6 +94,24 @@
 			return $this->res;
 		}
 
+
+  public function send_sql_new($sql) {
+			if (!isset($this->mysqli))
+				$this->connect();
+			try {
+
+				if (! $res = $this->mysqli->query($sql))
+					throw new Exception("Could not send query");
+                   
+			} catch (Exception $e)
+			{
+				echo $e->getMessage()."<BR>";
+				echo $this->mysqli->error;
+				
+                exit;
+			}
+			return $res;
+		}
 		// Shows the contents of the $res as a table
 		public function printout() {
 			if (isset($this->res) && (($this->res->num_rows) > 0))
