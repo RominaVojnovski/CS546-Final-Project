@@ -5,7 +5,7 @@
     require_once '../include/Twig-1.15.1/lib/Twig/Autoloader.php';
     Twig_Autoloader::register();
     //Twig use $loader variable to locate the templates.
-    $loader = new Twig_Loader_Filesystem(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'twigtpl');
+    $loader = new Twig_Loader_Filesystem(dirname(dirname(__FILE__))."/".'twigtpl');
     //Twig_Environment is used to store the configuration.
     $twig = new Twig_Environment($loader);
 
@@ -36,15 +36,15 @@
           header("location:login.php");
     }
     elseif(isset($_FILES['file_input']) && !empty($_FILES['file_input'])){
-        $uploadsDirectory = dirname($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'uploaded_files'.DIRECTORY_SEPARATOR.$userid; 
+        $uploadsDirectory = dirname($_SERVER['DOCUMENT_ROOT'])."/".'uploaded_files'."/".$userid; 
         // Convert image files to image objects.
         $ifileobjs = covertImageFilesToObj($_FILES['file_input'],$twig);  
 
         if(is_array($ifileobjs) && count($ifileobjs)>0){
-            error_log("\ni am here ::: ".empty($_POST['title'])." title::: ".$_POST['title']." string lenght ".strlen(trim($_POST['title']))." reg ".preg_match('/^[\w\-" "]+$/', trim($_POST['title'])), 3, "/var/tmp/my-errors.log");
+            //error_log("\ni am here ::: ".empty($_POST['title'])." title::: ".$_POST['title']." string lenght ".strlen(trim($_POST['title']))." reg ".preg_match('/^[\w\-" "]+$/', trim($_POST['title'])), 3, "/var/tmp/my-errors.log");
             
               if(empty($_POST['title'])){
-                  error_log("\ntitle is not set", 3, "/var/tmp/my-errors.log");
+                  //error_log("\ntitle is not set", 3, "/var/tmp/my-errors.log");
                   echo $twig->render($templatename, array('msg'=>'Album title was empty.','uname'=>$uname));
               }
               elseif(!empty($_POST['title']) && strlen(trim($_POST['title']))>3 && preg_match('/^[\w\-" "]+$/', trim($_POST['title'])) ){
@@ -54,7 +54,7 @@
                     mkdir($uploadsDirectory, 0777, true);
                   }
 
-                  $albumpath = $uploadsDirectory.DIRECTORY_SEPARATOR.$album_title;
+                  $albumpath = $uploadsDirectory."/".$album_title;
                   // Check if given album already exists for a loggedin user. 
                   if(!file_exists($albumpath) && !mkdir($albumpath, 0777, true)){
 
@@ -98,7 +98,7 @@
          }
      }
     elseif(empty($_FILES['file_input']) && !isset($_FILES['file_input']) && !isset($_POST['title'])){
-        error_log("no problem initial call ***".isset($_POST['title']), 3, "/var/tmp/my-errors.log");
+        //error_log("no problem initial call ***".isset($_POST['title']), 3, "/var/tmp/my-errors.log");
         echo $twig->render($templatename,array('uname' => $uname));       
     }
     else{
@@ -111,7 +111,7 @@
           foreach($iFileArr as $if)  
                 {  
                   // Get a unique name of a image file.
-                  $imgfpath=$albumpath.DIRECTORY_SEPARATOR.sha1_file($if->tmp_name).get_file_extension($if->name);  
+                  $imgfpath=$albumpath."/".sha1_file($if->tmp_name).get_file_extension($if->name);  
                   if(upload($if,$imgfpath)){  
                       // if photo in the given album already exist donot insert into db
                       if(!$dboperation->getAlbumPhoto($albumid,$imgfpath))
@@ -200,16 +200,16 @@
   function createThumbnailImage($albumpath){
 
     //Create thumbs folder.
-    if(!file_exists($albumpath.DIRECTORY_SEPARATOR."thumbs")){
-       $thumb_path = $albumpath.DIRECTORY_SEPARATOR."thumbs";    
+    if(!file_exists($albumpath."/"."thumbs")){
+       $thumb_path = $albumpath."/"."thumbs";    
        mkdir($thumb_path,0777,true);
      }else
-       $thumb_path = $albumpath.DIRECTORY_SEPARATOR."thumbs";
+       $thumb_path = $albumpath."/"."thumbs";
 
     // Open current album directory. 
      if ( $handle = opendir($albumpath)) {
         while ( ($file = readdir($handle)) !== false ) {
-            $fpath = $albumpath.DIRECTORY_SEPARATOR.$file;  
+            $fpath = $albumpath."/".$file;  
 			      if ( strcmp(filetype($fpath),"file")==0 ) {
                 resizeExistingImage($thumb_path,$file,$albumpath) ;
 			      }//if is_dir close
@@ -223,12 +223,12 @@
     $max_width = 140;
 
     $ext = get_file_extension($file);
-    $fpath =  $albumpath.DIRECTORY_SEPARATOR.$file; 
+    $fpath =  $albumpath."/".$file; 
     $img_type = getImageType($ext);
     //echo "file ::".$fpath." ext ".$img_type."<br/>";
     if($img_type!=''){
        //echo "one<br/>"; 
-       if ( ! file_exists($thumb_path.DIRECTORY_SEPARATOR.$file) ) {   
+       if ( ! file_exists($thumb_path."/".$file) ) {   
             if ( $img_type == 'jpg' ) {
 			         $src_hand = imagecreatefromjpeg($fpath);
 		        } else if ( $img_type == 'png' ) {
@@ -246,16 +246,16 @@
                     $newH = $oldH * ($max_height / $oldW);
                  }
                // create a black block image.    
-               error_log("\n new dimentions :::: for file ::".$file."width:: ".$newW." height:: ".$newH, 3, "/var/tmp/my-errors.log"); 
+               //error_log("\n new dimentions :::: for file ::".$file."width:: ".$newW." height:: ".$newH, 3, "/var/tmp/my-errors.log"); 
                $new_imgres = imagecreatetruecolor($newW, $newH);
                //copy and resizing the original image into thumbnail image.
                imagecopyresampled($new_imgres, $src_hand, 0, 0, 0, 0, $newW, $newH, $oldW, $oldH);   
                if ( $img_type == 'jpg' ) {
-			            imagejpeg($new_imgres, $thumb_path.DIRECTORY_SEPARATOR.$file);
+			            imagejpeg($new_imgres, $thumb_path."/".$file);
 		           } else if ( $img_type == 'png' ) {
-			            imagepng($new_imgres, $thumb_path.DIRECTORY_SEPARATOR.$file);
+			            imagepng($new_imgres, $thumb_path."/".$file);
 		           } else if ( $img_type == 'gif' ) {
-			            imagegif($new_imgres, $thumb_path.DIRECTORY_SEPARATOR.$file);
+			            imagegif($new_imgres, $thumb_path."/".$file);
 		           }
 		           imagedestroy($new_imgres);
 		           imagedestroy($src_hand);

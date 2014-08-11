@@ -2,7 +2,7 @@
 
 if(isset($_GET['path']) && !empty($_GET['path'])){
 
-    $imgpath = $uploadsDirectory = dirname($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'uploaded_files'.DIRECTORY_SEPARATOR.$_GET['path'];
+    $imgpath = $uploadsDirectory = dirname($_SERVER['DOCUMENT_ROOT'])."/".'uploaded_files'."/".$_GET['path'];
     $type = getImageType(get_file_extension($imgpath));
 
     if ( $type == 'jpg' ) {
@@ -21,7 +21,7 @@ if(isset($_GET['path']) && !empty($_GET['path'])){
   
     function get_file_extension($fpath)  
     { 
-      $file_name = substr($fpath,strrpos($fpath,DIRECTORY_SEPARATOR)+1); 
+      $file_name = substr($fpath,strrpos($fpath,"/")+1); 
      
       return substr($file_name,strrpos($file_name,'.'));  
     }  

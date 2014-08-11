@@ -5,7 +5,7 @@
     require_once '../include/Twig-1.15.1/lib/Twig/Autoloader.php';
     Twig_Autoloader::register();
     //Twig use $loader variable to locate the templates.
-    $loader = new Twig_Loader_Filesystem(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'twigtpl');
+    $loader = new Twig_Loader_Filesystem(dirname(dirname(__FILE__))."/".'twigtpl');
     //Twig_Environment is used to store the configuration.
     $twig = new Twig_Environment($loader);
 
@@ -47,7 +47,7 @@
           $shared_album_arr = $dboperation->getSharedAlbumArray($shared_album_res); 
 
           //error_log("\n album arr count ".count($album_arr), 3, "/var/tmp/my-errors.log");
-          error_log("\n shared album arr count ".count($shared_album_arr), 3, "/var/tmp/my-errors.log");
+          //error_log("\n shared album arr count ".count($shared_album_arr), 3, "/var/tmp/my-errors.log");
           //If thumnail view
           if(empty($viewtype)){
             $newarr = getHomePagePath($album_arr);
@@ -87,7 +87,7 @@
   function getHomePagePath($album_arr){
 
       foreach($album_arr as $id => &$otherinfo){
-              error_log("\n album path ".$otherinfo['path'], 3, "/var/tmp/my-errors.log");
+              //error_log("\n album path ".$otherinfo['path'], 3, "/var/tmp/my-errors.log");
               $apath =  $otherinfo['path'];
               $frelpath = readThumbnailImagePath($apath);
               //echo $frelpath."<br/>";
@@ -103,7 +103,7 @@
            $newarr[$inx] = array();
            for($col = 0 ;$col<6;$col++){
               if($counter < count($album_arr)){
-                 error_log("\n row:: ".$inx." col::".$col."counter ::".$counter, 3, "/var/tmp/my-errors.log");
+                 //error_log("\n row:: ".$inx." col::".$col."counter ::".$counter, 3, "/var/tmp/my-errors.log");
                  array_push($newarr[$inx],$album_arr[$counter]);
                  //$newarr[$inx] = array($col => $album_arr[$counter]);
                  $counter ++;
@@ -118,8 +118,8 @@
   }
 
   function readThumbnailImagePath($apath){
-    $thums_path = $apath.DIRECTORY_SEPARATOR."thumbs"  ;
-    $documentroot = dirname($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'uploaded_files'.DIRECTORY_SEPARATOR;
+    $thums_path = $apath."/"."thumbs"  ;
+    $documentroot = dirname($_SERVER['DOCUMENT_ROOT'])."/".'uploaded_files'."/";
     $frelpath ="";
     if(file_exists($thums_path)){
        if ( $handle = opendir($thums_path)) {
@@ -129,7 +129,7 @@
               if($img_type!=''){
                 //error_log("\n thum path ".$thums_path. " ***file ".$file, 3, "/var/tmp/my-errors.log");
                 $frelpath = str_replace($documentroot,'',$thums_path);
-                $frelpath = $frelpath.DIRECTORY_SEPARATOR.$file;
+                $frelpath = $frelpath."/".$file;
                 //error_log("\n album photo rel path ".$frelpath, 3, "/var/tmp/my-errors.log");
                 //return $frelpath;
                 break;
@@ -146,14 +146,14 @@
         
         if ( $handle = opendir($apath)) {
         while ( ($file = readdir($handle)) !== false ) {
-            $fpath = $apath.DIRECTORY_SEPARATOR.$file;  
+            $fpath = $apath."/".$file;  
 			      if ( strcmp(filetype($fpath),"file")==0 ) {
                 $ext = get_file_extension($file);
                 $img_type = getImageType($ext);
                if($img_type!=''){
                   if(empty($frelpath)){
                     $frelpath = str_replace($documentroot,'',$thums_path);
-                    $frelpath = $frelpath.DIRECTORY_SEPARATOR.$file;
+                    $frelpath = $frelpath."/".$file;
                   }  
                   resizeExistingImage($thums_path,$file,$apath,$img_type) ;
                 }
@@ -186,8 +186,8 @@
     $max_height = 140 ;
     $max_width = 140;
 
-    $fpath =  $albumpath.DIRECTORY_SEPARATOR.$file; 
-       if ( ! file_exists($thumb_path.DIRECTORY_SEPARATOR.$file) ) {   
+    $fpath =  $albumpath."/".$file; 
+       if ( ! file_exists($thumb_path."/".$file) ) {   
             if ( $img_type == 'jpg' ) {
 			         $src_hand = imagecreatefromjpeg($fpath);
 		        } else if ( $img_type == 'png' ) {
@@ -209,11 +209,11 @@
                //copy and resizing the original image into thumbnail image.
                imagecopyresampled($new_imgres, $src_hand, 0, 0, 0, 0, $newW, $newH, $oldW, $oldH);   
                if ( $img_type == 'jpg' ) {
-			            imagejpeg($new_imgres, $thumb_path.DIRECTORY_SEPARATOR.$file);
+			            imagejpeg($new_imgres, $thumb_path."/".$file);
 		           } else if ( $img_type == 'png' ) {
-			            imagepng($new_imgres, $thumb_path.DIRECTORY_SEPARATOR.$file);
+			            imagepng($new_imgres, $thumb_path."/".$file);
 		           } else if ( $img_type == 'gif' ) {
-			            imagegif($new_imgres, $thumb_path.DIRECTORY_SEPARATOR.$file);
+			            imagegif($new_imgres, $thumb_path."/".$file);
 		           }
 		           imagedestroy($new_imgres);
 		           imagedestroy($src_hand);
