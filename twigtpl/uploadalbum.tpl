@@ -116,7 +116,8 @@
               <div class="form-group form-group-sm">
                 <label for="file_input" class="col-md-2">*Upload Images </label>
                 <div class="col-md-8">
-                <input name="file_input[]"  id="file_input" multiple="" webkitdirectory="" type="file" accept="image/*"><br/>
+                <input name="file_input[]"  id="file_input" multiple="" webkitdirectory="" type="file" accept="image/*">
+                <span class="help-block">Only .jpg/.jpeg, .gif and .png images are accepted for upload. Also, 50 image files are accepted to upload in one request and a file size limit is 5mb. </span>                
                 </div>      
               </div>
 

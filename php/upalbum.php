@@ -86,7 +86,7 @@
                 $album_title = trim($_POST['title']);
               else
                 $album_title = "";    
-            echo $twig->render($templatename, array('msg'=>'No image file is uploaded. Only .jpg/.jpeg, .gif and .png images under are    accepted for upload.','title'=>$album_title,'uname' => $uname));
+            echo $twig->render($templatename, array('msg'=>'No image file is uploaded. Only .jpg/.jpeg, .gif and .png images are accepted for upload.','title'=>$album_title,'uname' => $uname));
          }
 
         elseif(is_string($ifileobjs)){
@@ -225,18 +225,19 @@
     $ext = get_file_extension($file);
     $fpath =  $albumpath."/".$file; 
     $img_type = getImageType($ext);
-    //echo "file ::".$fpath." ext ".$img_type."<br/>";
     if($img_type!=''){
-       //echo "one<br/>"; 
        if ( ! file_exists($thumb_path."/".$file) ) {   
-            if ( $img_type == 'jpg' ) {
+            /*if ( $img_type == 'jpg' ) {
 			         $src_hand = imagecreatefromjpeg($fpath);
 		        } else if ( $img_type == 'png' ) {
 			         $src_hand = imagecreatefrompng($fpath);
 		        } else if ( $img_type == 'gif' ) {
 			         $src_hand = imagecreatefromgif($fpath);
-		        }
-            if($src_hand){
+		        }*/
+
+            $src_hand = imagecreatefromstring(file_get_contents($fpath));    
+ 
+            if($src_hand !== false){
               if ( ($oldW = imagesx($src_hand)) < ($oldH = imagesy($src_hand)) ) 
                  {
                     $newW = $oldW * ($max_width / $oldH);
