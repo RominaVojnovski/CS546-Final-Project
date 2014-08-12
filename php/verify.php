@@ -64,7 +64,7 @@
     <?php
     if(isset($_GET['activation']) && isset($_GET['email'])){
         include("mysqli_class.php");
-        include("../../../dbprop.php");   
+        //include("../../../dbprop.php");   
         $db = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
         $activation=$_GET['activation'];
         $email=$_GET['email'];
