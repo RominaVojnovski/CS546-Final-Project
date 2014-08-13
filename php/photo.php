@@ -127,16 +127,14 @@ if(empty($_SESSION['confirmed'])){
                    
                     $htmlphoto="<div class= 'row'><div class='col-md-6'><img src='imagedisplay.php?path=".$path."'/></div>";
                     
-                    $htmlpostedby="<div class='col-md-6'><br/>Posted by: ".$poster."<br/>On: ".$dateposted."</div></div>";
+                    $htmlpostedby="<div class='col-md-6'><br/>Photo by: ".$poster."<br/>On: ".$dateposted."</div></div>";
                     echo $htmlphoto.$htmlpostedby;
         ?>
         
         <br/>         
         <div class="row">
             <div class="col-md-12" id="commentdiv">
-                <ul id="commentlist" style="list-style-type: none;">
-        
-                </ul>
+               
             
             </div>    
         </div>
@@ -205,7 +203,7 @@ if(empty($_SESSION['confirmed'])){
                         url:"process.php",
                         data:"pinfo=show&pid="+pid,
                         success:function(data){
-                             $("#commentlist").html(data);
+                             $("#commentdiv").html(data);
                         }
                       }); 
                    } 
