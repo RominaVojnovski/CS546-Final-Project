@@ -31,33 +31,49 @@
 
 <body>
 
-    <!-- Navigation -->
-    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
-      <nav id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
-            <li class="sidebar-brand">
-                <a href="../index.html">Pix Gallery</a>
-            </li>
-            <li>
-                <a href="upalbum.php">Upload</a>
-            </li>
-            <li>
-                <a href="#">Tags</a>
-            </li>
-            <li>
-                <a href="#">Gallery</a>
-            </li>
-             <li>
-                <a href="#">Search</a>
-            </li>
-            <li>
-                <a href="login.php">Login/Register</a>
-            </li>
-        </ul>
+     <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../index.html">PixGallery</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="../php/home.php">Home</a>
+                    </li>
+                    <li>
+                        <a href="../php/upalbum.php">Upload</a>
+                    </li>
+                    <li>
+                        <a href="#">Tags</a>
+                    </li> 
+                    <li>
+                        <a href="#">Search</a>
+                    </li>    
+                    <li>
+                        <a href="../php/logout.php">Logout</a>
+                    </li>
+
+                </ul>
+                <ul class="nav navbar-nav  navbar-right">
+                    <li> 
+                        <a class="text-info" href="login.php"><strong>Welcome <?php if(isset($_SESSION['name'])) echo $_SESSION['name'] ?></strong></a>
+                    </li>                
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
     </nav>
-    
-    
     <!-- MAIN AREA OF PAGE-->
     <br/>
     <br/>
@@ -94,8 +110,10 @@
             if(!empty($confirmed_date)){//user has already confirmed
                 
     ?>
-        
-    <p style="font-size: 30px; padding: 0 0 0 30px;">You have already confirmed registration!</p>
+    <br/>
+    <br/>
+    <br/>
+    <p style="font-size: 20px; padding: 0 0 0 30px;">You have already confirmed registration!</p>
     
     <?php
             }
@@ -114,8 +132,10 @@
                 }
             
                 ?>
-                    
-    <p style="font-size: 30px; padding: 0 0 0 30px;">Thank you for confirming you may now login and enjoy full access!</p>
+    <br/>
+    <br/> 
+    <br/> 
+    <p style="font-size: 20px; padding: 0 0 0 30px;">Thank you for confirming you may now login and enjoy full access!</p>
                     
     <?php
             }
@@ -124,14 +144,17 @@
         else
         {       
     ?>
-    <p style="font-size: 30px; padding: 0 0 0 30px;">Sorry we could not process your request</p>
+    <br/>
+    <br/> 
+    <br/>
+    <p style="font-size: 20px; padding: 0 0 0 30px;">Sorry we could not process your request</p>
     <?php
         }
     }//if email and activation query string are set 
            
     else{
     ?>
-        <p style="font-size: 30px; padding: 0 0 0 30px;">We could not process your request</p>
+        <p style="font-size: 20px; padding: 0 0 0 30px;">We could not process your request</p>
     <?php
     }
         ?>

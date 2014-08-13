@@ -1,3 +1,7 @@
+<?php
+ob_start();
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,47 +34,59 @@
 </head>
 
 <body>
+        <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../index.html">PixGallery</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="../php/home.php">Home</a>
+                    </li>
+                    <li>
+                        <a href="../php/upalbum.php">Upload</a>
+                    </li>
+                    <li>
+                        <a href="#">Tags</a>
+                    </li> 
+                    <li>
+                        <a href="#">Search</a>
+                    </li>    
+                    <li>
+                        <a href="../php/logout.php">Logout</a>
+                    </li>
 
-    <!-- Navigation -->
-    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
-      <nav id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
-            <li class="sidebar-brand">
-                <a href="../index.html">Pix Gallery</a>
-            </li>
-            <li>
-                <a href="upalbum.php">Upload</a>
-            </li>
-            <li>
-                <a href="#">Tags</a>
-            </li>
-            <li>
-                <a href="#">Gallery</a>
-            </li>
-             <li>
-                <a href="#">Search</a>
-            </li>
-            <li>
-                <a href="login.php">Login/Register</a>
-            </li>
-        </ul>
+                </ul>
+                <ul class="nav navbar-nav  navbar-right">
+                    <li> 
+                        <a class="text-info" href="login.php"><strong>Welcome <?php if(isset($_SESSION['name'])) echo $_SESSION['name'] ?></strong></a>
+                    </li>                
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
     </nav>
-    
     
     <!-- MAIN AREA OF PAGE-->
    
     
     <h2></h2>
         <BR/>
-        
-        
         <div class="row">
        
             <div class="col-sm-8">
                 <?php
-                session_start();
-               
                 if(!empty($_SESSION['loggedin']))
                 {
                     $error_message='';
@@ -154,20 +170,17 @@
                     else{
                         
                 ?>
- 
+                <br/>
                 <h2 style="padding: 0 0 0 100px;">Account Information</h2>
                 <div class="row" style="padding: 0 0 0 100px;">
                     <div class="col-sm-12">
                         <p>Thanks for logging in <?php echo $_SESSION['name'] ?>! your email address is <?php echo $_SESSION['email'] ?>.</p>
                     </div> 
                 </div>
-                
                 <?php
-                
                 //user has not cofirmed registration if when_confirmed Session var is NULL    
                 if(empty(($_SESSION['confirmed'])))
                 {
-                    
                     ?>
                     <div class="row" style="padding: 0 0 0 100px;">
                         <div class="col-sm-12">
@@ -178,11 +191,7 @@
                 }
                         ?>
                     
-                <div class="row" style="padding: 0 0 0 100px;">
-                    <div class="col-sm-12">
-                        <p>Click <a href='logout.php?id=<?php echo $_SESSION['uid'] ?>'>here </a>to logout.</p>
-                    </div> 
-                </div>
+                
                 <h3 style="padding: 0 0 0 100px;">Password change</h3>
                 <form role="form" method="post" action="login.php" name="loginform" id="loginform">
                     <div class="form-group" style="padding: 0 0 0 100px;">
@@ -215,11 +224,8 @@
                             </p>
                         </div>
                     </div>   
-                </form>
-                
+                </form> 
                 <?php
-                
-                
                     }
                 }
 
@@ -253,28 +259,27 @@
                
                     if((!empty($uid)) && (!empty($name)) && (!empty($email)))
                     {
+                        
                         $_SESSION['name'] = $name;
                         $_SESSION['email'] = $email;
                         $_SESSION['loggedin'] = 1;
                         $_SESSION['uid'] = $uid;
                         $_SESSION['confirmed']= $confdate;
          
-                        /*echo "<br/><br/>";
-                        
-                        echo "<p style='font-size:30px;padding: 0 0 0 100px;'>Welcome back ".$_SESSION['name']."!</p>";*/
                         //Redirect user to home/gallery page
-                        header("location:home.php");
-                     
+                       header("location:home.php");
+                      
                     }
                     else
                     {
                         echo "<br/><br/>";
-                        echo "<p style='font-size:30px;padding: 0 0 0 100px;'>Sorry, you entered the wrong combination. Please <a href=\"login.php\">click here to try again</a>.</p>";
+                        echo "<p style='font-size:20px;padding: 0 0 0 100px;'>Sorry, you entered the wrong combination. Please <a href=\"login.php\">click here to try again</a>.</p>";
                     }
                 }
                 else
                 {
                 ?>
+                <br/>
                 <h2 style="padding: 0 0 0 100px;">Member Login</h2>
      
                 <p style="padding: 0 0 0 100px;">Thanks for visiting! Please either login below or <a href="register.php">click here to register</a>.</p>
