@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Upload Album</title>
+    <title>Tags</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -47,10 +47,10 @@
                     <li>
                         <a href="../php/home.php">Home</a>
                     </li>
-                    <li class="active">
+                    <li>
                         <a href="../php/upalbum.php">Upload</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="../php/tags.php">Tags</a>
                     </li> 
    
@@ -82,79 +82,81 @@
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">
-                    <small>Upload Album</small>
+                    <small>Tags</small>
                 </h1>
             </div>
         </div>
-      {% if msg %}
-        <div class="row">
-            <div class="col-lg-12">
-                <h2>
-                    <small>
-                       <div id="server_msg">{{ msg }}</div>
-                    </small>
-                </h2>
-            </div>
-        </div>
-      {% endif %}
+
       
-      <div class="row">
-        <div class="col-lg-12">
-          <h3>
-            <small>
-              <div id="not_image_file"> </div>
-            </small> 
-          </h3>
+
+
+<!--      <div class="row">
+        
+        <div class="col-sm-5">
+        <div class="row">
+        <label for="tag" class="col-xs-1">Tags</label>
+        <select class="form-control">
+          <option>Birthday Party
+        </select>
         </div>
-      </div>
-
-       <form id ="upalbumform" role="form" action="../php/upalbum.php" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-
-              <div class="form-group form-group-sm">
-                <label for="file_input" class="col-md-2">*Upload Images </label>
-                <div class="col-md-5">
-                <input name="file_input[]"  id="file_input" multiple="" webkitdirectory="" type="file" accept="image/*">
-                <span class="help-block">Only .jpg/.jpeg, .gif and .png images are accepted for upload. Also, 50 image files 
-                 are accepted to upload in one request and a file size limit is 5mb. </span>                
-                </div>      
-              </div>
-
-              <div class="form-group  title-group has-feedback form-group-sm">
-                  <label for="title" class="col-md-2">*Album Title</label>
-                  <div class="col-xs-4">
-                    <input type="text"id="title" name="title" class="form-control" pattern="[A-Za-z0-9]" 
-                      {% if title %} 
-                        value ="{{ title }}"
-                      {% else %}
-                        value = ""      
-                      {% endif %}
-                    placeholder="Enter album name" autocomplete="on" required>
-                    <span class="glyphicon form-control-feedback" id="feedback_icon"></span>
-                   <span id="title_valid_msg"></span> 
-                 </div> 
-              </div>
-
-              <div class="form-group form-group-sm">     
-                <label for="tag" class="col-md-2"> Tags</label>
-                <div class="col-xs-4">
-                <select class="form-control">
-                  <option disabled selected>Select the tag</option>
-                  <option>Birthday Party</option>
-                </select>
-                <span class="help-block">Tag your new album</span>    
-                </div>
-             </div> 
-             <div class="form-group">
-                <div class="col-sm-offset-2 col-md-8">
-                    <button class="btn btn-info" name="upload" id ="uploadbtn">Upload</button>
-                </div>     
-             </div> 
-
+       </div> 
+      <div class="col-sm-3">
+      <form class="form-inline"  role="form">
+        <div class="form-group">
+          <label class="sr-only" for="addtag">Tag</label>
+          <input type="text" class="form-control" id="addtag" placeholder="Enter new tag">
+        </div>
+        <button type="submit" class="btn btn-info">Add</button>
       </form>
-    <div id="dialog"><div id="dialogText"></div></div>
+      </div>
+    </div>
+    <br/>
+    <br/>-->
 
+    <form id ="tagform" role="form" action="../php/addtag.php" method="post" class="form-horizontal">
+      <div class="form-group form-group-sm pull-right">
+        <div class="col-xs-10">
+            <input type="text"id="newtag" name="newtag" class="form-control"  placeholder="Enter new tag" pattern="[A-Za-z0-9]" >
+            <span class="help-block">Multiple tags are accepted seperated by ,</span>  
+        </div> 
+        <button class="btn btn-info btn-sm" name="addtagbtn" id ="addtagbtn">Add</button>
+      </div>
+      
+      <div class="form-group form-group-sm">     
+        <label for="tag" class="col-xs-1">Tags</label>
+        <div class="col-xs-4">
+        <select class="form-control">
+          <option disabled selected>Select the tag</option>
+          <option>Birthday Party</option>
+        </select>
+        <span class="help-block">Select the tag to look up the album(s) associated with it.</span>    
+        </div>
+      </div> 
 
+   </form> 
+  <br/>
+  <br/>
+
+    <table class="table table-condensed">
+        <tr>
+          <th>Album Title</th>
+          <th>Total Photos</th>
+          <th>Uploaded By</th>
+          
+        <tr/>
+
+          <tr>
+            <td><a href="getAlbum.php?albumid=13">random</a></td>
+            <td>40</td>
+            <td>Tom Cruise</td>
+          </tr>
+          <tr>
+            <td><a href="getAlbum.php?albumid=14">myalbum</a></td>
+            <td>40</td>
+            <td>You</td>
+          </tr>
+
+      </table>
   </div>
 
     <!-- jQuery Version 1.11.0 -->
@@ -163,7 +165,6 @@
     <!-- Bootstrap Core JavaScript -->
     <!-- script src="../js/bootstrap.min.js"></script -->
   <script src="../js/bootstrap.min.js"></script>
-  <script src="../js/uploadalbum.js"></script>
   <script src="../js/jquery-ui.js"></script>
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /> 
   <!--<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js" /> -->

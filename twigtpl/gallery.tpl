@@ -44,18 +44,16 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li>
+                    <li class="active">
                         <a href="../php/home.php">Home</a>
                     </li>
                     <li>
                         <a href="../php/upalbum.php">Upload</a>
                     </li>
                     <li>
-                        <a href="#">Tags</a>
+                        <a href="../php/tags.php">Tags</a>
                     </li> 
-                    <li>
-                        <a href="#">Search</a>
-                    </li>    
+   
                     <li>
                         <a href="../php/logout.php">Logout</a>
                     </li>
@@ -82,18 +80,35 @@
         <!-- Page Heading -->
               
 
-                <div class="col-md-1 navbar-right">
-
-         
-                  <a href="home.php{% if viewtype == 'list' %}  {% else %}?viewtype='listview' {% endif %} " class= "btn btn-info pull-right" >
+             <div class="row navbar-right">
+               <div class="col-xs-10"> 
+                
+               <!-- <form class="form-inline" role="search">
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search for people to share">
+                  </div>
+                  <button type="submit" class="btn btn-info">Share!</button>
+                </form> -->
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Search album by title">
+                   <span class="input-group-btn">
+                      <button class="btn btn-info" type="button">
+                        <span class="glyphicon glyphicon-search"></span>
+                      </button>
+                   </span>
+                </div>
+              </div>
+              <div class="col-md-1" >
+                 <a href="home.php{% if viewtype == 'list' %}  {% else %}?viewtype='listview' {% endif %} " class= "btn btn-info" >
                      <span {% if viewtype == 'list' %} 
+
                               class="glyphicon glyphicon-th"
                             {% else %}
                                class="glyphicon glyphicon-th-list"   
                             {% endif %}></span>
                   </a> 
-              
-                </div>
+             </div> 
+           </div>  
             
     {% if viewtype == 'thumb' %}  
       {% if album_arr %}
@@ -214,7 +229,7 @@
         <tr>
           <th>Album Title</th>
           <th>Total Photos</th>
-          <th>Uploaded Date</th>
+          <th>Shared Date</th>
           
         <tr/>
         {% for key,arr in shared_album %}
