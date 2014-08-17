@@ -52,9 +52,11 @@
           if(empty($viewtype)){
             $newarr = getHomePagePath($album_arr);
             $newsharedalbumarr = getHomePagePath($shared_album_arr);
-         
+
+            $dboperation->disconnect_db();
             echo $twig->render($templatename, array('album_arr'=>$newarr,'shared_album' => $newsharedalbumarr,'uname' => $uname,'viewtype' => 'thumb')); 
           }else{
+            $dboperation->disconnect_db();
             echo $twig->render($templatename, array('album_arr'=>$album_arr,'shared_album' => $shared_album_arr,'uname' => $uname,'viewtype' => 'list')); 
           }
           
@@ -64,8 +66,12 @@
           $album_arr = $dboperation->getAlbumArray($alm_res);
           if(empty($viewtype)){  
             $newarr = getHomePagePath($album_arr);
-            echo $twig->render($templatename, array('album_arr'=>$newarr, 'uname' => $uname,'viewtype' => 'thumb' ));   
+            
+             $dboperation->disconnect_db();
+             echo $twig->render($templatename, array('album_arr'=>$newarr, 'uname' => $uname,'viewtype' => 'thumb' ));   
           }else{
+              
+             $dboperation->disconnect_db(); 
              echo $twig->render($templatename, array('album_arr'=>$album_arr,'uname' => $uname,'viewtype' => 'list')); 
           }
        }elseif($shared_album_res){
@@ -73,12 +79,18 @@
           $shared_album_arr = $dboperation->getSharedAlbumArray($shared_album_res); 
           if(empty($viewtype)){   
             $newsharedalbumarr = getHomePagePath($shared_album_arr);
+
+            $dboperation->disconnect_db();
             echo $twig->render($templatename, array('shared_album'=>$newsharedalbumarr, 'uname' => $uname,'viewtype' => 'thumb')); 
           }else{
+
+             $dboperation->disconnect_db(); 
              echo $twig->render($templatename, array('shared_album'=>$shared_album_arr, 'uname' => $uname,'viewtype' => 'list'));
           }
        } 
        else{
+          
+          $dboperation->disconnect_db();
           echo $twig->render($templatename,array('uname' => $uname,'viewtype' => 'thumb'));
        }
 

@@ -27,8 +27,133 @@ class dboperation{
  
   }
 
+  /* Function get the Album information by albumid from the database if exists */
+  public function getAlbumById($albumid,$userid){
+    $sql = "select title,album_path,when_posted from album where album_id = ".$albumid." and userid = ".$userid;
+    try{
+      $res = $this->db->send_sql($sql);
+      if($res->num_rows == 0){
+         return False;
+      }
+      else
+        return $res; 
+    }catch(Exception $e){
+          echo "Error in getting album information from db";
+    }
+ 
+  }
+
+  public function getSharedAlbumById($albumid,$userid){
+
+    $sql = "select a.title,a.userid,a.album_path,sa.when_shared from shared_albums as sa,album as a where a.album_id = sa.album_id 
+            and sa.shared_with_uid = ".$userid." and sa.album_id = ".$albumid;
+    try{
+      $res = $this->db->send_sql($sql);
+      if($res->num_rows == 0){
+         return False;
+      }
+      else
+        return $res; 
+    }catch(Exception $e){
+          echo "Error in getting album information from db";
+    }
+
+  }
+
+  public function getTags(){
+    $sql = "select tag_id,tag_text from tags";
+    try{
+      $res = $this->db->send_sql($sql);
+      if($res->num_rows == 0){
+         return False;
+      }
+      else
+        return $res; 
+    }catch(Exception $e){
+          echo "Error in getting tag information from db";
+    }
+
+  }
+
+  public function getTagAlbum($albumid){
+
+    $sql = "select * from tags_albums where album_id=".$albumid;
+    try{
+      $res = $this->db->send_sql($sql);
+      if($res->num_rows == 0){
+         return False;
+      }
+      else
+        return $res; 
+    }catch(Exception $e){
+          echo "Error in getting tag album information from db";
+    }
+
+  }
+
+  public function insertTagAlbum($tagid,$albumid){
+    $sql = "insert into tags_albums(tagid,album_id) values (".$tagid.",".$albumid.")";
+    try{
+      $this->db->send_sql($sql);
+      //return $this->db->insert_id();
+    }catch(Exception $e){
+       return "Error in inserting tag album details into db. ".$e->getMessage();   
+    }
+    
+  }
+  
+  public function updateTagAlbum($tagid,$albumid){
+    $sql = "update tags_albums set tagid = ".$tagid." where album_id = ".$albumid;
+    try{
+      $this->db->send_sql($sql);
+    }catch(Exception $e){
+       return "Error in updating tag album info into db. ".$e->getMessage();   
+    }
+
+
+  }
+
+  public function getTagArr($tagRes){
+     $arr = array(); 
+     while ($row  =  $tagRes->fetch_assoc()) {
+          $arr[$row['tag_id']] = $row['tag_text'] ;
+			  } 
+
+      return $arr;
+
+  }
+  public function getAlbumPhotos($albumid){
+  
+    $sql = "select photo_id,photo_path from album_photos where album_id = ".$albumid;
+    try{
+      $res = $this->db->send_sql($sql);
+      if($res->num_rows == 0){
+         return False;
+      }
+      else
+        return $res; 
+    }catch(Exception $e){
+          echo "Error in getting photo information from db";
+    }
+
+  }
+
+
+  public function getPhotoArr($photores){
+
+   $arr = array(); 
+   $index = 0; 
+   while ($row  =  $photores->fetch_assoc()) {
+        $arr[$index] = array( 'photoid' => $row['photo_id'], 
+                      'path' => $row['photo_path']);
+        $index++;
+			} 
+
+    return $arr;
+
+  }
   public function getUser($userid){
-    $sql = "select when_confirmed from users where uid = ".$userid;
+    $sql = "select when_confirmed,name from users where uid = ".$userid;
     try{
       $res = $this->db->send_sql($sql);
       if($res->num_rows == 0){
@@ -59,7 +184,7 @@ class dboperation{
     $sql = "insert into album_photos(album_id,photo_path) values (".$albumid.",'".$photo_path."')";
     try{
       $this->db->send_sql($sql);
-      return $this->db->insert_id();
+      //return $this->db->insert_id();
     }catch(Exception $e){
        return "Error in inserting album photo details into db. ".$e->getMessage();   
     }

@@ -13,7 +13,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/stylish-portfolio.css" rel="stylesheet">
+    <link href="../css/4-col-portfolio.css" rel="stylesheet">
     <!-- Custom CSS     -->
 
 
@@ -72,12 +72,7 @@
 
     <!-- Page Content -->
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">
-                </h1>
-            </div>
-        </div>
+  
         <!-- Page Heading -->
         <div class="row">
             <div class="col-lg-12">
@@ -138,9 +133,11 @@
               <div class="form-group form-group-sm">     
                 <label for="tag" class="col-md-2"> Tags</label>
                 <div class="col-xs-4">
-                <select class="form-control">
+                <select class="form-control" id="albumtag" name="albumtag">
                   <option disabled selected>Select the tag</option>
-                  <option>Birthday Party</option>
+                  {% for id,text in tagarr %}
+                    <option value="{{id}}">{{text}}</option>
+                  {% endfor %}
                 </select>
                 <span class="help-block">Tag your new album</span>    
                 </div>

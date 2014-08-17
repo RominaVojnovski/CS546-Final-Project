@@ -29,7 +29,12 @@
            
         }
     }
-  
+    // Get Tag details from database.
+    if($tag_res = $dboperation->getTags()){
+      $tagarr = $dboperation->getTagArr($tag_res);
+
+    }    
+
 
     // If session doesnot exist redirect user to login page.
     if((!isset($_SESSION['loggedin']) && !isset($userid)) || empty($confirmed_reg_date)){
@@ -44,8 +49,9 @@
             //error_log("\ni am here ::: ".empty($_POST['title'])." title::: ".$_POST['title']." string lenght ".strlen(trim($_POST['title']))." reg ".preg_match('/^[\w\-" "]+$/', trim($_POST['title'])), 3, "/var/tmp/my-errors.log");
             
               if(empty($_POST['title'])){
+                  $dboperation->disconnect_db();
                   //error_log("\ntitle is not set", 3, "/var/tmp/my-errors.log");
-                  echo $twig->render($templatename, array('msg'=>'Album title was empty.','uname'=>$uname));
+                  echo $twig->render($templatename, array('msg'=>'Album title was empty.','uname'=>$uname,'tagarr'=>$tagarr));
               }
               elseif(!empty($_POST['title']) && strlen(trim($_POST['title']))>3 && preg_match('/^[\w\-" "]+$/', trim($_POST['title'])) ){
                    $album_title = trim($_POST['title']);
@@ -58,55 +64,76 @@
                   // Check if given album already exists for a loggedin user. 
                   if(!file_exists($albumpath) && !mkdir($albumpath, 0777, true)){
 
-                   echo $twig->render($templatename, array('msg'=>'Failed to create folders \" '.$albumpath."\"",'title'=>$album_title,'uname' => $uname)); 
+                   echo $twig->render($templatename, array('msg'=>'Failed to create folders \" '.$albumpath."\"",'title'=>$album_title,'uname' => $uname,'tagarr'=>$tagarr)); 
                    
                   }else{
                     
-                    
+                    $dboperation->startTransaction();
+
                     if($alm_res = $dboperation->getAlbumObj($album_title,$userid)){
                        $res_arr = $dboperation->next_res_row($alm_res); 
                        $albumid = $res_arr['album_id']; 
+              
                     }else{
                        $albumid= $dboperation->insertAlbum(addslashes($album_title),$userid,$albumpath); 
                     }
+
+                    if(isset($_POST['albumtag'])){
+                       $tagid =  $_POST['albumtag'];
+                       //error_log("tag id :::: ".$tagid, 3, "/var/tmp/my-errors.log");  
+                      if($dboperation->getTagAlbum($albumid)){
+                         $dboperation->updateTagAlbum($tagid,$albumid); 
+                      }else{
+                         $dboperation->insertTagAlbum($tagid,$albumid);   
+                      }          
+                    }  
                     // Move the uploaded file to it's new location.  
                     if(uploadFiles($ifileobjs,$albumpath,$albumid,$dboperation,$twig,$templatename )){
+                        $dboperation->endTransaction();
                         // Create thumbnail images of album photos.    
                         createThumbnailImage($albumpath);
-                        echo $twig->render($templatename, array('msg'=>'Photos are uploaded successfully.','title'=>"",'uname' => $uname));    
+
+                        $dboperation->disconnect_db();
+                        echo $twig->render($templatename, array('msg'=>'Photos are uploaded successfully.','title'=>"",'uname' => $uname,'tagarr'=>$tagarr));    
                     } 
                  }
                  
               }// else if
               else{
-                 echo $twig->render($templatename, array('msg'=>'Album title should be more than 3 Alphanumeric characters','title'=>$_POST ['title'],'uname' => $uname));     
+
+                 $dboperation->disconnect_db(); 
+                 echo $twig->render($templatename, array('msg'=>'Album title should be more than 3 Alphanumeric characters','title'=>$_POST ['title'],'uname' => $uname,'tagarr'=>$tagarr));     
                } 
          }elseif(is_array($ifileobjs) && count($ifileobjs)==0){
             if(isset($_POST['title']))
                 $album_title = trim($_POST['title']);
               else
                 $album_title = "";    
-            echo $twig->render($templatename, array('msg'=>'No image file is uploaded. Only .jpg/.jpeg, .gif and .png images are accepted for upload.','title'=>$album_title,'uname' => $uname));
+            $dboperation->disconnect_db();
+            echo $twig->render($templatename, array('msg'=>'No image file is uploaded. Only .jpg/.jpeg, .gif and .png images are accepted for upload.','title'=>$album_title,'uname' => $uname,'tagarr'=>$tagarr));
          }
 
         elseif(is_string($ifileobjs)){
               if(isset($_POST['title']))
                 $album_title = trim($_POST['title']);
               else
-                $album_title = "";            
-              echo $twig->render($templatename, array('msg'=>$ifileobjs,'title'=>$album_title,'uname' => $uname));
+                $album_title = ""; 
+              $dboperation->disconnect_db();           
+              echo $twig->render($templatename, array('msg'=>$ifileobjs,'title'=>$album_title,'uname' => $uname,'tagarr'=>$tagarr));
          }
      }
     elseif(empty($_FILES['file_input']) && !isset($_FILES['file_input']) && !isset($_POST['title'])){
         //error_log("no problem initial call ***".isset($_POST['title']), 3, "/var/tmp/my-errors.log");
-        echo $twig->render($templatename,array('uname' => $uname));       
+        $dboperation->disconnect_db();
+        echo $twig->render($templatename,array('uname' => $uname,'tagarr'=>$tagarr));       
     }
     else{
-        echo $twig->render($templatename, array('msg'=>'Please enter (*) mandatory field(s)','title'=>"",'uname' => $uname));
+        $dboperation->disconnect_db();
+        echo $twig->render($templatename, array('msg'=>'Please enter (*) mandatory field(s)','title'=>"",'uname' => $uname,'tagarr'=>$tagarr));
     }
 
     function uploadFiles($iFileArr,$albumpath,$albumid,$dboperation,$twig,$templatename) {
-          $dboperation->startTransaction();
+         
           $result = false;
           foreach($iFileArr as $if)  
                 {  
@@ -121,7 +148,7 @@
                       $result = false;
                   }  
               } 
-         $dboperation->endTransaction();
+         
          return $result;
     }
     
@@ -236,21 +263,35 @@
 		        }*/
 
             $src_hand = imagecreatefromstring(file_get_contents($fpath));    
- 
+            //error_log("\n image width dimensions :::: for file ::".$file."width:: ".imagesx($src_hand) , 3, "/var/tmp/my-errors.log"); 
+            //error_log("\n image heigth dimensions :::: for file ::".$file."height:: ".imagesy($src_hand) , 3, "/var/tmp/my-errors.log"); 
+
+            $size = getimagesize($fpath);
+           //error_log("\n getimagesize :::: for file ::".$file."height:: ".$size[1]." width ::".$size[0] , 3, "/var/tmp/my-errors.log"); 
             if($src_hand !== false){
               if ( ($oldW = imagesx($src_hand)) < ($oldH = imagesy($src_hand)) ) 
                  {
                     $newW = $oldW * ($max_width / $oldH);
                     $newH = $max_height;
+          
+                    $tbw = (int)(100 * $oldW / $oldH );
+                    $tbh = 100;
                  } else {
                     $newW = $max_width;
                     $newH = $oldH * ($max_height / $oldW);
+        
+                    $tbw = 100;
+                     $tbh = (int)(100 * $oldH / $oldW );
                  }
+
+                
                // create a black block image.    
-               //error_log("\n new dimentions :::: for file ::".$file."width:: ".$newW." height:: ".$newH, 3, "/var/tmp/my-errors.log"); 
+               //error_log("\n new dimentions :::: for file ::".$file."width:: ".$newW." height:: ".$newH, 3, "/var/tmp/my-errors.log");
+               //error_log("\n new dimentions ***** for file ::".$file."width:: ".$tbw." height:: ".$tbh, 3, "/var/tmp/my-errors.log");    
+ 
                $new_imgres = imagecreatetruecolor($newW, $newH);
                //copy and resizing the original image into thumbnail image.
-               imagecopyresampled($new_imgres, $src_hand, 0, 0, 0, 0, $newW, $newH, $oldW, $oldH);   
+               imagecopyresampled($new_imgres, $src_hand, 0, 0, 0, 0, $max_width, $max_height, $oldW, $oldH);   
                if ( $img_type == 'jpg' ) {
 			            imagejpeg($new_imgres, $thumb_path."/".$file);
 		           } else if ( $img_type == 'png' ) {
