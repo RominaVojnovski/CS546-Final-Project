@@ -57,10 +57,7 @@ if(empty($_SESSION['confirmed'])){
                         <a href="../php/upalbum.php">Upload</a>
                     </li>
                     <li>
-                        <a href="#">Tags</a>
-                    </li> 
-                    <li>
-                        <a href="#">Search</a>
+                        <a href="../php/tags.php">Tags</a>
                     </li>    
                     <li>
                         <a href="../php/logout.php">Logout</a>
@@ -125,7 +122,7 @@ if(empty($_SESSION['confirmed'])){
                     
                     
                    
-                    $htmlphoto="<div class= 'row'><div class='col-md-6'><img src='imagedisplay.php?path=".$path."'/></div>";
+                    $htmlphoto="<div class= 'row'><div class='col-md-6'><img src='imagedisplay.php?path=".$path."' class='img-responsive'/></div>";
                     
                     $htmlpostedby="<div class='col-md-6'><br/>Photo by: ".$poster."<br/>On: ".$dateposted."</div></div>";
                     echo $htmlphoto.$htmlpostedby;

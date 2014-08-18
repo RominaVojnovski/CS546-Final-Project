@@ -57,11 +57,8 @@ session_start();
                         <a href="../php/upalbum.php">Upload</a>
                     </li>
                     <li>
-                        <a href="#">Tags</a>
-                    </li> 
-                    <li>
-                        <a href="#">Search</a>
-                    </li>    
+                        <a href="../php/tags.php">Tags</a>
+                    </li>     
                     <li>
                         <a href="../php/logout.php">Logout</a>
                     </li>
@@ -93,7 +90,7 @@ session_start();
                     if(!empty($_POST['oldpassword']) && !empty($_POST['newpassword']) && !empty($_POST['newpassword2']))
                 
                     {
-                        include("mysqli_class.php");
+                        //include("mysqli_class.php");
                         include("../../../dbprop.php");   
                     
                         $db2 = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
@@ -237,6 +234,7 @@ session_start();
                     
                     $email = $_POST['email'];
                     $password = trim(hash('sha256',$_POST['password']));
+                    //$remember_me=$_POST['remember_me'];
      
                     $sql = "SELECT uid,name,email,when_confirmed FROM users WHERE email = ? AND password =?";
                   
@@ -265,11 +263,26 @@ session_start();
                         $_SESSION['loggedin'] = 1;
                         $_SESSION['uid'] = $uid;
                         $_SESSION['confirmed']= $confdate;
-         
+                        
+
+          
+                        
+                        if($_POST['remember_me'])
+                        {
+                        
+                            /* Set cookie to last 1 year */
+                            setcookie('email', $_POST['email'], time()+60*60*24*365);
+                        } 
+                        else
+                        {
+                            if(isset($_COOKIE['email'])) {
+		                      setcookie(email,"", time() - 100);
+	                       
+                            }
+                        }
                         //Redirect user to home/gallery page
-                       header("location:home.php");
-                      
-                    }
+                        header("location:home.php");
+                    } 
                     else
                     {
                         echo "<br/><br/>";
@@ -289,7 +302,7 @@ session_start();
                     <br/>
                     <div class="form-group" style="padding: 0 0 0 100px;">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter email" style="width: 300px;">
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter email" style="width: 300px;" value = "<?php if (isset($_COOKIE['email']))echo $_COOKIE['email']; ?>">
                     </div>
                     <div class="form-group" style="padding: 0 0 0 100px;">
                         <label for="password">Password</label>
@@ -300,7 +313,7 @@ session_start();
                     </div>
                     <div class="checkbox" style="padding: 0 0 0 100px;">
                         <label>
-                        <input type="checkbox"> Remember Me
+                        <input type="checkbox" name="remember_me"> Remember Me
                         </label>
                     </div>
                     <div class="form-group" style="padding: 0 0 0 100px;">
@@ -310,10 +323,9 @@ session_start();
     
                 
                 <?php
-                }
+                   }
                 ?>
-                
-            
+                            
         
         </div>
     <div class="col-sm-4">
@@ -361,7 +373,7 @@ session_start();
             //re = /(?=.*[a-zA-Z])(?=.*[0-9]).{6,15}/;
             re= /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/;
             
-            //re = /^[a-zA-Z ]+$/;
+           
             if((pass1.value.length < 6) || (pass1.value.length > 15) || !re.test(pass1.value)){
                 pass1.style.backgroundColor = badColor;
                 message2.style.color = badColor;
@@ -397,4 +409,3 @@ session_start();
         }  
     </script>
 </html>
-

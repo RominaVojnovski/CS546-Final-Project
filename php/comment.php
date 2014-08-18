@@ -57,11 +57,8 @@ if(empty($_SESSION['confirmed'])){
                         <a href="../php/upalbum.php">Upload</a>
                     </li>
                     <li>
-                        <a href="#">Tags</a>
-                    </li> 
-                    <li>
-                        <a href="#">Search</a>
-                    </li>    
+                        <a href="../php/tags.php">Tags</a>
+                    </li>     
                     <li>
                         <a href="../php/logout.php">Logout</a>
                     </li>
@@ -128,7 +125,7 @@ if(empty($_SESSION['confirmed'])){
                     $cdate=$row['when_posted'];
                     
                    
-                    $htmlphoto="<div class= 'row'><div class='col-md-6'><img src='imagedisplay.php?path=".$path."'/></div>";
+                    $htmlphoto="<div class= 'row'><div class='col-md-6'><img src='imagedisplay.php?path=".$path."' class='img-responsive'/></div>";
                     
                     $htmlpostedby="<div class='col-md-6'><br/><h3>".$ctitle."</h3><br/>".$ctext."<br/>comment by: ".$commenter." on: ".$cdate."</div></div>";
                     echo $htmlphoto.$htmlpostedby;
