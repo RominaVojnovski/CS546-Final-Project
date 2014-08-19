@@ -267,7 +267,7 @@ session_start();
 
           
                         
-                        if($_POST['remember_me'])
+                        if(isset($_POST['remember_me']))
                         {
                         
                             /* Set cookie to last 1 year */
