@@ -15,6 +15,8 @@
     $userid = $_SESSION['uid'];
     $uname = $_SESSION['name'];
     $confirmed_reg_date = $_SESSION['confirmed'];
+      
+    //error_log("\n search string  ".$_GET['searchalbum']." ::".$_GET['viewtype'], 3, "/var/tmp/my-errors.log");
 
     if(empty($confirmed_reg_date) && isset($userid) ){
         if($user_res = $dboperation->getUser($userid)){
@@ -26,18 +28,25 @@
         }
     }
 
-    if(isset($_GET['viewtype']))
+    if(isset($_GET['viewtype']) && !empty($_GET['viewtype']))
       $viewtype = $_GET['viewtype'];
     else
-      $viewtype = "";
+      $viewtype = "thumb";
     
-  
     if((!isset($_SESSION['loggedin']) && !isset($userid)) || empty($confirmed_reg_date)){
        header("location:login.php");
     }else{
       
-       $alm_res = $dboperation->getUserAlbum($userid);
-       $shared_album_res = $dboperation->getSharedAlbum($userid);  
+       if(isset($_GET['searchalbum']) && !empty($_GET['searchalbum'])){ 
+          $searchstr = addslashes(trim($_GET['searchalbum']));
+          if(!empty($searchstr)){
+            $alm_res = $dboperation->getUserAlbumByTitle($userid,$searchstr);
+            $shared_album_res = $dboperation->getSharedAlbumByTitle($userid,$searchstr); 
+           }  
+       }else{
+         $alm_res = $dboperation->getUserAlbum($userid);
+         $shared_album_res = $dboperation->getSharedAlbum($userid);  
+       }
         
        if($alm_res && $shared_album_res){
 
@@ -49,43 +58,71 @@
           //error_log("\n album arr count ".count($album_arr), 3, "/var/tmp/my-errors.log");
           //error_log("\n shared album arr count ".count($shared_album_arr), 3, "/var/tmp/my-errors.log");
           //If thumnail view
-          if(empty($viewtype)){
+          if(strcmp($viewtype,"thumb")==0){
             $newarr = getHomePagePath($album_arr);
             $newsharedalbumarr = getHomePagePath($shared_album_arr);
 
             $dboperation->disconnect_db();
-            echo $twig->render($templatename, array('album_arr'=>$newarr,'shared_album' => $newsharedalbumarr,'uname' => $uname,'viewtype' => 'thumb')); 
+            if(empty($searchstr)){
+              echo $twig->render($templatename, array('album_arr'=>$newarr,'shared_album' => $newsharedalbumarr,'uname' => $uname,
+              'viewtype' => 'thumb')); 
+            }else{
+              echo $twig->render($templatename, array('album_arr'=>$newarr,'shared_album' => $newsharedalbumarr,'uname' => $uname,
+              'viewtype' => 'thumb','searchstr'=>$searchstr)); 
+            }
           }else{
             $dboperation->disconnect_db();
-            echo $twig->render($templatename, array('album_arr'=>$album_arr,'shared_album' => $shared_album_arr,'uname' => $uname,'viewtype' => 'list')); 
+            if(empty($searchstr)){
+              echo $twig->render($templatename, array('album_arr'=>$album_arr,'shared_album' => $shared_album_arr,'uname' => $uname,'viewtype' => 'list')); 
+            }else{
+              echo $twig->render($templatename, array('album_arr'=>$album_arr,'shared_album' => $shared_album_arr,'uname' => $uname,'viewtype' => 'list','searchstr'=>$searchstr)); 
+            }
           }
           
          
 
        }elseif($alm_res){
           $album_arr = $dboperation->getAlbumArray($alm_res);
-          if(empty($viewtype)){  
+          if(strcmp($viewtype,"thumb")==0){  
             $newarr = getHomePagePath($album_arr);
             
              $dboperation->disconnect_db();
-             echo $twig->render($templatename, array('album_arr'=>$newarr, 'uname' => $uname,'viewtype' => 'thumb' ));   
+             if(empty($searchstr)){ 
+              echo $twig->render($templatename, array('album_arr'=>$newarr, 'uname' => $uname,'viewtype' => 'thumb' ));
+             }else{
+              echo $twig->render($templatename, array('album_arr'=>$newarr, 'uname' => $uname,'viewtype' => 'thumb','searchstr'=>$searchstr ));  
+             }     
           }else{
               
              $dboperation->disconnect_db(); 
-             echo $twig->render($templatename, array('album_arr'=>$album_arr,'uname' => $uname,'viewtype' => 'list')); 
+             if(empty($searchstr)){  
+              echo $twig->render($templatename, array('album_arr'=>$album_arr,'uname' => $uname,'viewtype' => 'list')); 
+             }else{
+              echo $twig->render($templatename, array('album_arr'=>$album_arr,'uname' => $uname,'viewtype' => 'list','searchstr'=>$searchstr)); 
+
+
+             } 
           }
        }elseif($shared_album_res){
 
           $shared_album_arr = $dboperation->getSharedAlbumArray($shared_album_res); 
-          if(empty($viewtype)){   
+          if(strcmp($viewtype,"thumb")==0){   
             $newsharedalbumarr = getHomePagePath($shared_album_arr);
 
             $dboperation->disconnect_db();
-            echo $twig->render($templatename, array('shared_album'=>$newsharedalbumarr, 'uname' => $uname,'viewtype' => 'thumb')); 
+            if(empty($searchstr)){ 
+              echo $twig->render($templatename, array('shared_album'=>$newsharedalbumarr, 'uname' => $uname,'viewtype' => 'thumb')); 
+            }else{
+               echo $twig->render($templatename, array('shared_album'=>$newsharedalbumarr, 'uname' => $uname,'viewtype' =>'thumb','searchstr'=>$searchstr)); 
+            }
           }else{
 
              $dboperation->disconnect_db(); 
-             echo $twig->render($templatename, array('shared_album'=>$shared_album_arr, 'uname' => $uname,'viewtype' => 'list'));
+             if(empty($searchstr)){  
+              echo $twig->render($templatename, array('shared_album'=>$shared_album_arr, 'uname' => $uname,'viewtype' => 'list'));
+             }else{
+              echo $twig->render($templatename, array('shared_album'=>$shared_album_arr, 'uname' => $uname,'viewtype' => 'list','searchstr'=>$searchstr));
+             }  
           }
        } 
        else{

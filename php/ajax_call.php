@@ -17,7 +17,58 @@ if(isset($_POST['action']) && $_POST['action'] == "check_album_exists"){
 			echo "false";
 		}	
 	}
-}
+}elseif(isset($_POST['action']) && $_POST['action'] == "get_user_info"){
+
+  //error_log("get_user_info ajax call\n", 3, "/var/tmp/my-errors.log");
+  if(isset($_POST['searchstr'])){
+    $str = trim($_POST['searchstr']);
+    
+    if($user_res = $dboperation->getUserByName($str)){
+
+     // error_log("\nstr".$str, 3,"/var/tmp/my-errors.log");
+
+      $user_arr = $dboperation->getUserArr($user_res);
+      $result = "<ul class='list-unstyled'>";
+      foreach($user_arr as $k=>$val){
+        $result.= "<li><a class='clickablelinkhere' id='".$k."' href='javascript:void(0);'>".htmlspecialchars($val)."</a></li>";
+      }     
+      $result.="</ul>";
+      echo $result;
+
+    }else{
+      echo "false";
+    }
+
+  }
+}elseif(isset($_POST['action']) && $_POST['action'] == "sharealbum"){
+  //error_log("sharealbum action\n", 3, "/var/tmp/my-errors.log");
+  if(isset($_POST['albumid']) && isset($_POST['uids'])){
+    $albumid = $_POST['albumid'];
+    $uids = $_POST['uids'];
+    $result = false;
+    //error_log("albumid ".$albumid." uids".$uids, 3, "/var/tmp/my-errors.log");
+
+    $uid_arr = explode("#", $uids);
+    $dboperation->startTransaction();
+    foreach($uid_arr as $uid){
+      if(!empty($uid)){
+        if($dboperation->isAlbumAlreadyShared($albumid,$uid))
+          $result = true;
+        else{
+          if($dboperation->insertSharedAlbums($albumid,$uid))
+            $result = true;
+          else
+            $result = false;
+        }
+      }
+
+    }
+    $dboperation->endTransaction();
+
+    echo $result;
+
+  }
+}  
 
 $dboperation->disconnect_db();
 

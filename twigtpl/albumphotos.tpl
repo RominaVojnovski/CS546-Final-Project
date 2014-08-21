@@ -71,33 +71,14 @@
     </nav>
 
     <!-- Page Content -->
-    <div class="container">
+    <div class="container-fluid">
 
 
         <!-- /.row -->
 
 
         <!-- Page Heading -->
-              
-              <div class="row navbar-right">
-               <div class="col-xs-10"> 
-                
-               <!-- <form class="form-inline" role="search">
-                  <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search for people to share">
-                  </div>
-                  <button type="submit" class="btn btn-info">Share!</button>
-                </form> -->
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Search for people to share">
-                   <span class="input-group-btn">
-                      <button class="btn btn-info" type="button">
-                        <span class="glyphicon glyphicon-share-alt"></span>
-                      </button>
-                   </span>
-                </div>
-              </div>
-              <div class="col-md-1" >
+              <div class="col-md-1 pull-right" >
                   <a href="getAlbum.php?albumid={{albumid}}{% if viewtype == 'list' %}  {% else %}&viewtype='listview' {% endif %} " class= "btn btn-info" >
                      <span {% if viewtype == 'list' %} 
 
@@ -107,8 +88,34 @@
                             {% endif %}></span>
                   </a> 
              </div> 
-            </div>  
-             
+              <!--<div class="row navbar-right">-->
+               <div class="col-md-6 pull-left"> 
+
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" placeholder="Search for people to share" id="sharepeople" name="sharepeople">
+                   <span class="input-group-btn">
+                      <button class="btn btn-info" type="button" id="sharebtn">
+                        <span class="glyphicon glyphicon-share-alt"></span>
+                      </button>
+                   </span>
+                   
+                </div>
+                <div id="searchhelp"></div> 
+              </div>
+              
+          <!--  </div>  -->
+
+
+        
+        <!--<div class="row">-->
+          <div class="col-md-12">
+            <h2>
+              <small>
+                <div id="querymsg"></div>
+              </small> 
+            </h2>
+          </div>
+      <!--  </div> -->
                
       {% if viewtype == 'thumb' %}  
         {% if photo_arr %}      
@@ -127,6 +134,7 @@
         </div>
       
 
+    
       <div class="container-fluid">
 
         {% for rows,cols in photo_arr %}
@@ -155,9 +163,8 @@
       
 
     {% if viewtype=='list' %}
-
+         {% if photo_arr %}
           <!-- Page Heading -->
-   <div class="row">
       <div class="col-md-12">
          <h3>{{title|capitalize}}
 
@@ -171,8 +178,8 @@
             </small>
           </h3>
        </div>
-   </div>
-   {% if photo_arr %}
+
+     <div class="container-fluid">
       <table class="table table-condensed">
           <tr>
             <th>Name</th>
@@ -191,11 +198,12 @@
             </tr>  
         {% endfor %}
       </table>
+  </div>
    {% endif %} 
 
  
 {% endif %}
-
+<input type="hidden" id="albumid" name="albumid" value="{{albumid}}"/>
 
      
     
@@ -204,7 +212,7 @@
 
     <!-- jQuery Version 1.11.0 -->
     <script src="../js/jquery-1.11.0.js"></script>
-
+    <script src="../js/albumphotos.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="../js/bootstrap.min.js"></script>
 

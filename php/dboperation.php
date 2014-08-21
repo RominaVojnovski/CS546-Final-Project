@@ -43,6 +43,31 @@ class dboperation{
  
   }
 
+  public function getUserByName($name){
+    $sql = "select uid,name,email from users where name like '%".$name."%'";
+    try{
+      $res = $this->db->send_sql($sql);
+      if($res->num_rows == 0){
+         return False;
+      }
+      else
+        return $res; 
+    }catch(Exception $e){
+          echo "Error in getting user information by name from db";
+    }
+  }
+
+  public function getUserArr($user_res){
+     $arr = array(); 
+     while ($row  =  $user_res->fetch_assoc()) {
+          $arr[$row['uid']] = $row['name']."<".$row['email'].">" ;
+			  } 
+
+    return $arr;
+  
+
+  }
+
   public function getSharedAlbumById($albumid,$userid){
 
     $sql = "select a.title,a.userid,a.album_path,sa.when_shared from shared_albums as sa,album as a where a.album_id = sa.album_id 
@@ -167,6 +192,20 @@ class dboperation{
 
   }
 
+  public function isAlbumAlreadyShared($albumid,$uid){
+      $sql = "select * from shared_albums where album_id = ".$albumid." and shared_with_uid = ".$uid;
+      try{
+        $res = $this->db->send_sql($sql);
+        if($res->num_rows == 0){
+           return False;
+        }
+        else
+          return true; 
+      }catch(Exception $e){
+            echo "Error in getting user information from db";
+      }
+
+  }
 /* Function add album information into the database */
   public function insertAlbum($title,$uid,$apath){
     $sql = "insert into album(title,userid,album_path) values ('".$title."',".$uid.",'".$apath."')";
@@ -177,6 +216,16 @@ class dboperation{
        return "Error in inserting album details into db. ".$e->getMessage();   
     }
  
+  }
+
+  public function insertSharedAlbums($albumid,$uid){
+    $sql = "insert into shared_albums(album_id,shared_with_uid) values (".$albumid.",".$uid.")";
+    try{
+      $result = $this->db->send_sql($sql);
+      return $result;
+    }catch(Exception $e){
+       return "Error in inserting shared album details into db. ".$e->getMessage();   
+    }
   }
 
   /* Function add album_photos information into the database */
@@ -229,6 +278,22 @@ class dboperation{
 
   }
   
+  public function getUserAlbumByTitle($userid,$searchstr){
+
+    $sql = "select a.album_id,a.title,a.album_path,a.when_posted,count(ap.photo_id) as total_photos from album as a, album_photos as ap
+    where a.userid = ". $userid." and a.album_id = ap.album_id and a.title like '%".$searchstr."%' GROUP BY a.album_id";
+    try{
+      $res = $this->db->send_sql($sql);
+      if($res->num_rows == 0){
+         return False;
+      }
+      else
+        return $res; 
+    }catch(Exception $e){
+          echo "Error in getting album information from db";
+    }
+
+  }
 
   public function getAlbumArray($alm_res){
    $arr = array(); 
@@ -265,6 +330,26 @@ class dboperation{
     }
 
   }
+
+  public function getSharedAlbumByTitle($userid,$searchstr){
+    $sql = "select sa.album_id,a.title,sa.when_shared,a.album_path,count(ap.photo_id) as total_photos from shared_albums as sa, 
+    album as a, album_photos as ap where sa.shared_with_uid = ".$userid." and sa.album_id = a.album_id and a.album_id = ap.album_id
+    and a.title like '%".$searchstr."%' GROUP BY a.album_id";
+
+    try{
+      $res = $this->db->send_sql_new($sql);
+      if($res->num_rows == 0){
+         return False;
+      }
+      else
+        return $res; 
+    }catch(Exception $e){
+          echo "Error in getting shared album information from db";
+    }
+
+  }
+
+
 
   public function getSharedAlbumArray($shared_album_res){
    

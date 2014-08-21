@@ -71,7 +71,7 @@
     </nav>
 
     <!-- Page Content -->
-    <div class="container">
+    <div class="container-fluid">
 
 
         <!-- /.row -->
@@ -80,25 +80,8 @@
         <!-- Page Heading -->
               
 
-             <div class="row navbar-right">
-               <div class="col-xs-10"> 
-                
-               <!-- <form class="form-inline" role="search">
-                  <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search for people to share">
-                  </div>
-                  <button type="submit" class="btn btn-info">Share!</button>
-                </form> -->
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Search album by title">
-                   <span class="input-group-btn">
-                      <button class="btn btn-info" type="button">
-                        <span class="glyphicon glyphicon-search"></span>
-                      </button>
-                   </span>
-                </div>
-              </div>
-              <div class="col-md-1" >
+            <!-- <div class="row navbar-right"> -->
+               <div class="col-md-1 pull-right" >
                  <a href="home.php{% if viewtype == 'list' %}  {% else %}?viewtype='listview' {% endif %} " class= "btn btn-info" >
                      <span {% if viewtype == 'list' %} 
 
@@ -107,8 +90,26 @@
                                class="glyphicon glyphicon-th-list"   
                             {% endif %}></span>
                   </a> 
-             </div> 
-           </div>  
+               </div>
+               <div class="col-md-6 pull-left"> 
+                 <form id ="searchform" role="form" action="../php/home.php" method="get"> 
+                  <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" placeholder="Search album by title" id="searchalbum" name="searchalbum"
+                    {% if searchstr %}
+                       value="{{searchstr}}" 
+                    {% endif %}  
+                     >
+                     <span class="input-group-btn">
+                        <button class="btn btn-info" type="button" id="searchbtn">
+                          <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                     </span>
+                  </div>
+                  <input id="viewtype" name="viewtype" type="hidden" value="{{viewtype}}">
+                </form>
+              </div>
+ 
+         <!--  </div>  -->
             
     {% if viewtype == 'thumb' %}  
       {% if album_arr %}
@@ -150,13 +151,13 @@
  
 
      {% if shared_album %}
-         <div class="row">
+
             <div class="col-md-12">
                 <h1 class="page-header">
                     <small>Shared Albums</small>
                 </h1>
             </div>
-        </div>
+
       <div class="container-fluid">
 
           {% for rows,cols in shared_album %}
@@ -187,16 +188,18 @@
 {% endif %}
 
 {% if viewtype=='list' %}
-
+  {% if album_arr %}
           <!-- Page Heading -->
-   <div class="row">
+  <!-- <div class="row">-->
       <div class="col-md-12">
          <h1>
             <small>Albums</small>
           </h1>
        </div>
-   </div>
-   {% if album_arr %}
+<!--   </div>-->
+ 
+ 
+      <div class="container-fluid">
       <table class="table table-condensed">
         <tr>
           <th>Album Title</th>
@@ -213,18 +216,19 @@
             </tr>  
         {% endfor %}
       </table>
+      </div>
    {% endif %} 
 
   {% if shared_album %}
 
-        <div class="row">
+     <!--   <div class="row"> -->
             <div class="col-md-12">
                 <h1>
                     <small>Shared Albums</small>
                 </h1>
             </div>
-        </div>
-
+       <!-- </div> -->
+    <div class="container-fluid">
       <table class="table table-condensed">
         <tr>
           <th>Album Title</th>
@@ -241,7 +245,7 @@
         {% endfor %}
       </table>
    {% endif %} 
-
+</div>
 
 {% endif %}
 
@@ -252,7 +256,7 @@
 
     <!-- jQuery Version 1.11.0 -->
     <script src="../js/jquery-1.11.0.js"></script>
-
+     <script src="../js/gallery.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="../js/bootstrap.min.js"></script>
 
