@@ -202,4 +202,192 @@ if($pinfo=="add2")
     
     
 }
+if($pinfo=="showtags")
+{
+    $sql="SELECT tag_id,tag_text from tags";
+    
+    if (!$stmt = $db->prepare($sql)) 
+    {
+        //echo 'Database prepare error';
+        //exit;
+    }
+
+    if (!$stmt->execute()) 
+    {
+        //echo 'Database execute error';
+        //exit;
+    }
+  
+    $stmt->bind_result($tid,$ttext);
+    $build="<option value=''>----Choose a tag----</option>";
+    while($stmt->fetch())
+    {
+        $build.="<option value=".$tid.">".$ttext."</option>";
+
+    }
+    
+    $stmt->close();
+    
+    echo $build;
+}
+if($pinfo=="addtags")
+{
+    $message='';
+    $proceed=true;
+    $tagtext=trim($_POST['newtag']);
+    
+    if((empty($tagtext))){
+        $proceed=false;
+    }
+    
+    $tarray = explode(',',$tagtext);
+    
+    //check for illegal characters in any of the tags if there are then let user know
+    foreach($tarray as $val){
+        if(!ctype_alpha($val)){
+            $proceed=false;
+            //$message.="please enter only alphabetic chars";
+        }
+    }
+    
+    if($proceed){
+        //loop thru each tag and insert if not already in db
+        $status=false;
+        foreach($tarray as $val){
+            $val2=strtolower($val);
+            $sql="SELECT tag_text from tags where tag_text = ?";
+            
+            if(!$stmt = $db->prepare($sql)) 
+            {
+                echo 'Database prepare error';
+                exit;
+            }
+            $stmt->bind_param('s',$val2);
+            if (!$stmt->execute()) 
+            {
+                echo 'Database execute error';
+                exit;
+            }
+  
+            $stmt->bind_result($ttext);
+            
+            $stmt->fetch();
+            $stmt->close();
+            
+            //if this then tag not in db so go ahead and insert in db
+            if(((strcmp($val2,$ttext))>0) || ((strcmp($val2,$ttext))<0)) {
+                $status=true;
+                $sql = "INSERT INTO tags (tag_text) VALUES (?)";
+                
+                if (!$stmt = $db->prepare($sql)) 
+                {
+                    echo 'Database prepare error';
+                    exit;
+                }
+
+                $stmt->bind_param('s',$val2);
+
+                if (!$stmt->execute()) 
+                {
+                    echo 'Database execute error';
+                    exit;
+                }
+        
+                $stmt->close();
+                }  
+        }
+        
+        if($status){
+            echo "Tags inserted";
+            
+        }
+        else{
+            echo "No tags inserted";
+        }
+        
+    }
+    else{
+    
+        echo "Please try again";
+    }
+}
+if($pinfo=="tagged")
+{
+    $tagid=$_POST['val'];
+    $sql="SELECT a.title,u.name,ta.album_id FROM album a,users u,tags_albums ta WHERE ta.album_id = a.album_id AND a.userid = u.uid AND ta.tagid = ?";
+
+    if (!$stmt = $db->prepare($sql)) 
+    {
+        echo 'Database prepare error';
+        exit;
+    }
+
+    $stmt->bind_param('i',$tagid);
+    if (!$stmt->execute()) 
+    {
+        echo 'Database execute error';
+        exit;
+    }
+  
+    $stmt->bind_result($title,$name,$aid); 
+    $titles=array();
+    $posters=array();
+    $aids=array();
+    
+    while($stmt->fetch())
+    {
+        $titles[]=$title;
+        $posters[]=$name;
+        $aids[]=$aid;
+    }
+    
+    $stmt->close();
+    
+    $totals=array();
+    foreach($aids as $val){
+        $sql="SELECT COUNT(*) FROM album_photos WHERE album_id = ? GROUP BY album_id";
+        if (!$stmt = $db->prepare($sql)) 
+        {
+            echo 'Database prepare error';
+            exit;
+        }
+
+        $stmt->bind_param('i',$val);
+
+        if (!$stmt->execute()) 
+        {
+            echo 'Database execute error';
+            exit;
+        }
+  
+        $stmt->bind_result($total);
+        $stmt->fetch();
+        if($total>0){
+            $totals[]=$total;
+        }
+        else{
+            $totals[]=0;    
+        }
+            $stmt->close();
+
+    }
+    $build="<tr>
+                <th>Album Title</th>
+                <th>Total Photos</th>
+                <th>Uploaded By</th>
+            <tr/>";
+    
+    $length = count($aids);
+    for ($i = 0; $i < $length; $i++) {
+        $build.="<tr>
+                <td><a href='getAlbum.php?albumid=$aids[$i]'>$titles[$i]</a></td>
+                <td>$totals[$i]</td>
+                <td>$posters[$i]</td>
+                </tr>";
+        
+    }
+    echo $build;
+}
+
+
 ?>
