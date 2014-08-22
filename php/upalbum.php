@@ -254,13 +254,7 @@
     $img_type = getImageType($ext);
     if($img_type!=''){
        if ( ! file_exists($thumb_path."/".$file) ) {   
-            /*if ( $img_type == 'jpg' ) {
-			         $src_hand = imagecreatefromjpeg($fpath);
-		        } else if ( $img_type == 'png' ) {
-			         $src_hand = imagecreatefrompng($fpath);
-		        } else if ( $img_type == 'gif' ) {
-			         $src_hand = imagecreatefromgif($fpath);
-		        }*/
+
 
             $src_hand = imagecreatefromstring(file_get_contents($fpath));    
             //error_log("\n image width dimensions :::: for file ::".$file."width:: ".imagesx($src_hand) , 3, "/var/tmp/my-errors.log"); 
@@ -269,29 +263,23 @@
             $size = getimagesize($fpath);
            //error_log("\n getimagesize :::: for file ::".$file."height:: ".$size[1]." width ::".$size[0] , 3, "/var/tmp/my-errors.log"); 
             if($src_hand !== false){
-              if ( ($oldW = imagesx($src_hand)) < ($oldH = imagesy($src_hand)) ) 
-                 {
-                    $newW = $oldW * ($max_width / $oldH);
-                    $newH = $max_height;
-          
-                    $tbw = (int)(100 * $oldW / $oldH );
-                    $tbh = 100;
-                 } else {
-                    $newW = $max_width;
-                    $newH = $oldH * ($max_height / $oldW);
-        
-                    $tbw = 100;
-                     $tbh = (int)(100 * $oldH / $oldW );
-                 }
+              $oldW = imagesx($src_hand);
+              $oldH = imagesy($src_hand);
+              $centreX = round($oldW / 2);
+              $centreY = round($oldH / 2);
+              $cropSize =$oldH;
+              if($oldW<$oldH)
+                $cropSize  = $oldW;
 
-                
+              $x1 = max(0, $centreX - round($cropSize / 2));
+              $y1 = max(0, $centreY - round($cropSize / 2));                
                // create a black block image.    
                //error_log("\n new dimentions :::: for file ::".$file."width:: ".$newW." height:: ".$newH, 3, "/var/tmp/my-errors.log");
                //error_log("\n new dimentions ***** for file ::".$file."width:: ".$tbw." height:: ".$tbh, 3, "/var/tmp/my-errors.log");    
  
-               $new_imgres = imagecreatetruecolor($newW, $newH);
+               $new_imgres = imagecreatetruecolor($max_width, $max_height);
                //copy and resizing the original image into thumbnail image.
-               imagecopyresampled($new_imgres, $src_hand, 0, 0, 0, 0, $max_width, $max_height, $oldW, $oldH);   
+              imagecopyresampled($new_imgres, $src_hand, 0, 0, $x1, $y1, $max_width, $max_height, $cropSize, $cropSize);     
                if ( $img_type == 'jpg' ) {
 			            imagejpeg($new_imgres, $thumb_path."/".$file);
 		           } else if ( $img_type == 'png' ) {

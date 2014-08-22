@@ -128,7 +128,7 @@
 
                 <div class="col-sm-2 portfolio-item">
                     <a href="getAlbum.php?albumid={{ainfo['id']}}">
-                        <img class="img-thumbnail" src="getimage.php?path={{ainfo['albumpgpath']}}" alt="">
+                        <img class="img-thumbnail img-responsive" src="getimage.php?path={{ainfo['albumpgpath']}}" alt="">
                     </a><br/>
                     <span class="pull-left">
                       <strong>{{ainfo['title']}}</strong>
@@ -166,7 +166,7 @@
 
                 <div class="col-sm-2 portfolio-item">
                     <a href="getAlbum.php?albumid={{sharedalbuminfo['id']}}">
-                        <img class="img-thumbnail" src="getimage.php?path={{sharedalbuminfo['albumpgpath']}}" alt="">
+                        <img class="img-thumbnail img-responsive" src="getimage.php?path={{sharedalbuminfo['albumpgpath']}}" alt="">
                     </a><br/>
                     <span class="pull-left"><strong>{{sharedalbuminfo['title']}}</strong></span>
                     

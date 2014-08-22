@@ -2,6 +2,10 @@
 include("../../../dbprop.php");
 $db = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
 $pinfo=$_POST['pinfo'];
+session_start();
+if(isset($_SESSION['uid'])){
+  $userid = $_SESSION['uid'];
+}
 
 if($pinfo=="show")
 {
@@ -314,7 +318,7 @@ if($pinfo=="addtags")
 if($pinfo=="tagged")
 {
     $tagid=$_POST['val'];
-    $sql="SELECT a.title,u.name,ta.album_id FROM album a,users u,tags_albums ta WHERE ta.album_id = a.album_id AND a.userid = u.uid AND ta.tagid = ?";
+    $sql="SELECT a.title,u.name,ta.album_id FROM album a,users u,tags_albums ta WHERE ta.album_id = a.album_id AND a.userid = u.uid AND  ta.tagid = ? AND u.uid = ?";
 
     if (!$stmt = $db->prepare($sql)) 
     {
@@ -322,7 +326,7 @@ if($pinfo=="tagged")
         exit;
     }
 
-    $stmt->bind_param('i',$tagid);
+    $stmt->bind_param('ii',$tagid,$userid);
     if (!$stmt->execute()) 
     {
         echo 'Database execute error';

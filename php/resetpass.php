@@ -58,11 +58,8 @@ session_start();
                         <a href="../php/upalbum.php">Upload</a>
                     </li>
                     <li>
-                        <a href="#">Tags</a>
+                        <a href="../php/tags.php">Tags</a>
                     </li> 
-                    <li>
-                        <a href="#">Search</a>
-                    </li>    
                     <li>
                         <a href="../php/logout.php">Logout</a>
                     </li>
