@@ -129,9 +129,10 @@ if(empty($_SESSION['confirmed'])){
                     
                     
                    
-                    $htmlphoto="<div class= 'row'><div class='col-md-6'><img src='imagedisplay.php?path=".$path."' class='img-responsive'/></div>";
+                    $htmlphoto="<br/><div class= 'row'><div class='col-md-8 col-md-offset-2'><img src='imagedisplay.php?path=".$path."' class='img-responsive center-block'/></div></div>";
                     
-                    $htmlpostedby="<div class='col-md-6'><br/>Photo by: ".$poster."<br/>On: ".$dateposted."</div></div>";
+                   $htmlpostedby="<br/><div class= 'row'><div style='text-align:center' class='col-md-8 col-md-offset-2'>From: ".$poster." On: ".$dateposted."</div></div>";
+                    
                     echo $htmlphoto.$htmlpostedby;
 
                    
@@ -150,7 +151,7 @@ if(empty($_SESSION['confirmed'])){
         ?>
 
         <div class="row">
-          <div class='col-md-6'>
+          <div class='col-md-8 col-md-offset-2'>
           <ul class="pager">
             <li id="ppager_parent"><a class="btn-sm" id="ppager" href="#">&larr;Previous</a></li>
             <li id="npager_parent"><a class="btn-sm" id="npager" href="#">Next&rarr;</a></li>
@@ -163,15 +164,22 @@ if(empty($_SESSION['confirmed'])){
     
         <br/>         
         <div class="row">
-            <div class="col-md-12" id="commentdiv">
+            <div class='col-md-8 col-md-offset-2' id="commentdiv">
                
             
             </div>    
         </div>
         <br/>
         <div class="row">
-                    <div class="col-md-12">
-                        <form role="form" name="commentform" id="commentform"> 
+            <div style="text-align:center;" class='col-md-8 col-md-offset-2'>
+            <h3>Leave a comment</h3>        
+            </div>
+        </div>
+        
+        
+        <div class="row">
+                    <div style="text-align:center;" class='col-md-8 col-md-offset-2'>
+                        <form style="display:inline-block;"role="form" name="commentform" id="commentform"> 
                             <input type="hidden" id="user" name="user" value="<?php if(isset($uid)){ echo $uid; }?>">
                             <input type="hidden" id="photo" name="photo" value="<?php if(isset($photoid)){ echo $photoid; } ?>">
 							<input type="hidden" id="albumid" name="albumid" value="<?php if(isset($albumid)){ echo $albumid; } ?>">		                            
@@ -181,7 +189,7 @@ if(empty($_SESSION['confirmed'])){
                             </div>
                             <div class="form-group">
                                 <label>Comment</label>
-                                <textarea class="form-control" name="comment" id="comment" style="width: 500px;" required></textarea>
+                                <textarea class="form-control" name="comment" id="comment" style="width: 500px; height:120px" required></textarea>
                             </div>
                             <div class="form-group">
                                  <input type='button' id="button" class="btn btn-info" value='Submit'/><span style="padding: 0 0 0 15px" id="messagep"></span>

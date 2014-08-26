@@ -69,7 +69,7 @@ if($pinfo=="show")
 
     }
     
-    $build="<table style='width: 50%'><tr><td>comment</td><td>responses</td></tr>";
+    $build="<table style='width: 50%;margin-left:auto;margin-right:auto'><tr><td style='width:80%'>comment</td><td style='text-align:center;width=20%'>responses</td></tr>";
     $length = count($cids);
     for ($i = 0; $i < $length; $i++) {
         if(strlen($ctexts[$i])>34){
@@ -78,7 +78,7 @@ if($pinfo=="show")
         else{
             $short=$ctexts[$i];
         }
-        $build.="<tr><td><a href='comment.php?cid=$cids[$i]'>$short</a></td><td>$totals[$i]</td></tr>";
+        $build.="<tr><td style='width=80%'><a href='comment.php?cid=$cids[$i]'>$short</a></td><td style='text-align:center;;width=20%'>$totals[$i]</td></tr>";
         
     }
 
