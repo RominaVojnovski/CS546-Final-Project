@@ -55,10 +55,17 @@
                     </li>
                     <li>
                         <a href="../php/tags.php">Tags</a>
-                    </li> 
+                    </li>    
+                    <?php 
+                    if(isset($_SESSION['loggedin']))      
+                        {
+                    ?>
                     <li>
                         <a href="../php/logout.php">Logout</a>
                     </li>
+                    <?php
+                        }
+                    ?>
 
                 </ul>
                 <ul class="nav navbar-nav  navbar-right">
