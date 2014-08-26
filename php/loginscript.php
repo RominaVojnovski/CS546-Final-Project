@@ -60,7 +60,7 @@ if(!empty($_POST['emaillogin']) && !empty($_POST['passwordlogin']))
         {
             if(isset($_COOKIE['email'])) 
             {
-		          setcookie(email,"", time() - 100);
+		          setcookie('email',"", time() - 100);
 	                       
             }
         }
