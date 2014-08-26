@@ -66,7 +66,7 @@ if(empty($_SESSION['confirmed'])){
                 </ul>
                 <ul class="nav navbar-nav  navbar-right">
                     <li> 
-                        <a class="text-info" href="login.php"><strong>Welcome <?php echo $_SESSION['name'] ?></strong></a>
+                        <a class="text-info" href="login.php"><strong>Welcome <?php if(isset($_SESSION['name'])){ echo $_SESSION['name']; } ?></strong></a>
                     </li>                
                 </ul>
             </div>
@@ -99,8 +99,9 @@ if(empty($_SESSION['confirmed'])){
                     
             $db1 = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
             $db=new database();
-            $uid=$_SESSION['uid'];
-            
+            if(isset($_SESSION['uid'])){
+                $uid=$_SESSION['uid'];
+            }
             if(isset($_GET['photoid'])){
                 $photoid=$_GET['photoid'];
             }
@@ -139,8 +140,8 @@ if(empty($_SESSION['confirmed'])){
         <div class="row">
                     <div class="col-md-12">
                         <form role="form" name="commentform" id="commentform"> 
-                            <input type="hidden" id="user" name="user" value="<?php echo $uid?>">
-                            <input type="hidden" id="photo" name="photo" value="<?php echo $photoid?>">
+                            <input type="hidden" id="user" name="user" value="<?php if(isset($uid)){ echo $uid; }?>">
+                            <input type="hidden" id="photo" name="photo" value="<?php if(isset($photoid)){ echo $photoid; } ?>">
                             <div class="form-group">
                                 <label for="title">Title</label>
                                 <input type="text" class="form-control" name="title" id="title" maxlength="40" style="width: 500px;">
