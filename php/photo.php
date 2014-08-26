@@ -278,7 +278,7 @@ if(empty($_SESSION['confirmed'])){
                       $("#ppager_parent").addClass("disabled");
                       $("#ppager").attr("href","#");    
                     }
-                    else if(counter>=photoids.length-1){
+                    if(counter>=(photoids.length-1)){
                       $("#npager_parent").addClass("disabled");
                       $("#npager").attr("href","#");    
 
