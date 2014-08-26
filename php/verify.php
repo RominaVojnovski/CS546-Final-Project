@@ -137,12 +137,17 @@ session_start();
                     echo 'Database execute error';
                     exit;
                 }
+                
+                if(!empty(($_SESSION['loggedin']))){
+                    $_SESSION['confirmed']=$now;   
+                    
+                }
             
                 ?>
     <br/>
     <br/> 
     <br/> 
-    <p style="font-size: 20px; padding: 0 0 0 30px;">Thank you for confirming you may now login and enjoy full access!</p>
+    <p style="font-size: 20px; padding: 0 0 0 30px;">Thank you for confirming you may now enjoy full access!</p>
                     
     <?php
             }
