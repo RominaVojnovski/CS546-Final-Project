@@ -78,12 +78,9 @@ if(empty($_SESSION['confirmed'])){
 
     <!-- Page Content -->
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">
-                </h1>
-            </div>
-        </div>
+        <br/>
+        <br/>
+        <br/>
         <!-- Page Heading -->
         <div class="row">
             <div class="col-lg-12">
