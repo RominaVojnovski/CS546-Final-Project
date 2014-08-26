@@ -17,7 +17,7 @@
   if((!isset($_SESSION['loggedin']) && !isset($_SESSION['uid'])) || empty($_SESSION['confirmed'])){
           header("location:login.php");
   }
-  elseif(isset($_GET['albumid'])){
+  elseif(isset($_GET['albumid']) && !empty($_GET['albumid'])){
        $albumid = $_GET['albumid'];
        $userid =  $_SESSION['uid'];
        $uname = $_SESSION['name']; 
@@ -33,6 +33,7 @@
           $album_arr = $dboperation->next_res_row($almres);
           $photores = $dboperation->getAlbumPhotos($albumid);
           $photoarr = $dboperation->getPhotoArr($photores);
+          $_SESSION['photoarr'] = $photoarr;
           //echo "title my album :::::".$album_arr['title']." path ::".$album_arr['album_path'];
           $title = $album_arr['title'];
           $apath = $album_arr['album_path'];
@@ -59,7 +60,7 @@
            //Get photos based on albumid
            $photores = $dboperation->getAlbumPhotos($albumid);
            $photoarr = $dboperation->getPhotoArr($photores);
-
+           $_SESSION['photoarr'] = $photoarr; 
            //Get user information who has shared this album 
            if($user_res = $dboperation->getUser($sharedby)){
               $user_arr = $dboperation->next_res_row($user_res); 
@@ -82,7 +83,9 @@
          echo "You are not allowed to access this album"; 
             
        }         
-  }
+  }else{
+      echo "Invalid request, albumid is missing";
+  } 
 
  
 

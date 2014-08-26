@@ -87,6 +87,7 @@
             unset($_SESSION['email']);
             unset($_SESSION['uid']);
             unset($_SESSION['confirmed']);
+            unset($_SESSION['photoarr']);
             session_destroy();
             echo "<br/><br/><p style='font-size:20px;padding: 0 0 0 40px;'>You have been succesfully logged out!</p>";
         }

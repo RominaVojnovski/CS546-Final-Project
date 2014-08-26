@@ -144,7 +144,7 @@
                {% for colindex,pinfo in cols %}
 
                 <div class="col-sm-2 portfolio-item">
-                    <a href="photo.php?photoid={{pinfo['photoid']}}">
+                    <a href="photo.php?photoid={{pinfo['photoid']}}&albumid={{albumid}}">
                         <img class="img-thumbnail" src="getimage.php?path={{pinfo['relpath']}}" alt="">
                     </a>
                 </div>
@@ -194,7 +194,7 @@
           <tr/>
         {% for key,arr in photo_arr %}
             <tr>
-              <td><a href="photo.php?photoid={{arr['photoid']}}">IMG_{{key+1}}.JPG</a></td>
+              <td><a href="photo.php?photoid={{arr['photoid']}}&albumid={{albumid}}">IMG_{{key+1}}.JPG</a></td>
               <td>Image</td>
               <td>{{posted_date}}</td>
             </tr>  

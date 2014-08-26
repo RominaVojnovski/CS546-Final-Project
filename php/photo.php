@@ -87,9 +87,9 @@ if(empty($_SESSION['confirmed'])){
      
         <div class="row">
             <div class="col-md-12">
-                <h1 class="page-header">
-                    <small>Photo</small>
-                </h1>
+                <h2 class="page-header">
+                    <small><a class= "text-info" href="getAlbum.php?albumid=<?php if(isset($_GET['albumid'])) { echo $_GET['albumid']; }?>">&larr;Back</a></small>
+                </h2>
             </div>
         </div>
         <?php
@@ -105,10 +105,16 @@ if(empty($_SESSION['confirmed'])){
             if(isset($_GET['photoid'])){
                 $photoid=$_GET['photoid'];
             }
+            if(isset($_GET['albumid']))  {
+                $albumid=$_GET['albumid'];
+            }
             //check if query string parameter of photoid is set and not empty
             
-            if(!empty($photoid))
+            if(!empty($photoid) && !empty($albumid))
             {
+                if(isset($_SESSION['photoarr'])){
+                  $photoarr = $_SESSION['photoarr'];
+                } 
                 //$sql = "SELECT photo_id,album_id,photo_path FROM album_photos WHERE photo_id = '".$photoid."'";
                 $sql= "SELECT u.name,p.photo_id,p.album_id,p.photo_path,a.when_posted FROM users u, album a, album_photos p WHERE u.uid = a.userid AND a.album_id = p.album_id AND p.photo_id = '".$photoid."'";
                 
@@ -127,8 +133,34 @@ if(empty($_SESSION['confirmed'])){
                     
                     $htmlpostedby="<div class='col-md-6'><br/>Photo by: ".$poster."<br/>On: ".$dateposted."</div></div>";
                     echo $htmlphoto.$htmlpostedby;
+
+                   
+ 
+          $counter = 0;  
+          if(!empty($photoarr)){
+            $photoids ="";
+            foreach($photoarr as $val){
+                 if(empty($photoids)) 
+                  $photoids = $val['photoid'] ;
+                 else     
+                  $photoids= $photoids."#".$val['photoid'] ;
+            }
+            echo "<input type='hidden' id='photoids' name='photoids' value='".$photoids."'>";
+          
         ?>
-        
+
+        <div class="row">
+          <div class='col-md-6'>
+          <ul class="pager">
+            <li id="ppager_parent"><a class="btn-sm" id="ppager" href="#">&larr;Previous</a></li>
+            <li id="npager_parent"><a class="btn-sm" id="npager" href="#">Next&rarr;</a></li>
+          </ul> 
+          </div>
+        </div>
+        <?php
+          }
+        ?>
+    
         <br/>         
         <div class="row">
             <div class="col-md-12" id="commentdiv">
@@ -142,7 +174,8 @@ if(empty($_SESSION['confirmed'])){
                         <form role="form" name="commentform" id="commentform"> 
                             <input type="hidden" id="user" name="user" value="<?php if(isset($uid)){ echo $uid; }?>">
                             <input type="hidden" id="photo" name="photo" value="<?php if(isset($photoid)){ echo $photoid; } ?>">
-                            <div class="form-group">
+							<input type="hidden" id="albumid" name="albumid" value="<?php if(isset($albumid)){ echo $albumid; } ?>">		                            
+								<div class="form-group">
                                 <label for="title">Title</label>
                                 <input type="text" class="form-control" name="title" id="title" maxlength="40" style="width: 500px;">
                             </div>
@@ -192,7 +225,10 @@ if(empty($_SESSION['confirmed'])){
     <script src="../js/bootstrap.min.js"></script>
     <script type="text/javascript">
                $(document).ready(function(){
-                   
+                   var photoid = $("#photo").val();
+                   var albumid = $("#albumid").val(); 
+                   var counter = -1; 
+                   var photoids = ""; 
                    function displayComment(){
                 
                        var pid=$("#photo").val();
@@ -230,6 +266,53 @@ if(empty($_SESSION['confirmed'])){
                           });
  
                     });
+
+                  console.log("photoids :::"+$("#photoids").val());
+                  function setPhotoids(){
+                    var photo_ids = $("#photoids").val();
+                    photoids = photo_ids.split("#");
+                    console.log("photoids arr length :::"+photoids.length +"photo id ::"+photoid);
+                    counter = photoids.indexOf(photoid);
+                    console.log("counter ::"+counter);
+                    if(counter<=0){
+                      $("#ppager_parent").addClass("disabled");
+                      $("#ppager").attr("href","#");    
+                    }
+                    else if(counter>=photoids.length-1){
+                      $("#npager_parent").addClass("disabled");
+                      $("#npager").attr("href","#");    
+
+                    }
+
+                  }
+                  setPhotoids();
+
+                  $("#ppager").click(function(event){
+
+                        if(counter<=0){
+                           $(this).parent().addClass("disabled");
+                           $(this).attr("href","#");  
+                        }else{
+                            counter--;    
+                            $(this).attr("href","photo.php?photoid="+photoids[counter]+"&albumid="+albumid); 
+                            
+                        }
+
+                  });
+                
+                  $("#npager").click(function(event){
+
+                            if(counter>=photoids.length-1){
+                               $(this).parent().addClass("disabled");
+                               $(this).attr("href","#");  
+                            }else{
+                                counter++;    
+                                $(this).attr("href","photo.php?photoid="+photoids[counter]+"&albumid="+albumid); 
+                                
+                            }
+
+                    });
+                  
                });
        
     </script>
