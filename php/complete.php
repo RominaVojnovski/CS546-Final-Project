@@ -1,3 +1,7 @@
+<?php
+
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,13 +59,17 @@
                     </li>
                     <li>
                         <a href="#">Tags</a>
-                    </li> 
-                    <li>
-                        <a href="#">Search</a>
-                    </li>    
+                    </li>     
+                    <?php 
+                    if(isset($_SESSION['loggedin']))      
+                        {
+                    ?>
                     <li>
                         <a href="../php/logout.php">Logout</a>
                     </li>
+                    <?php
+                        }
+                    ?>
 
                 </ul>
                 <ul class="nav navbar-nav  navbar-right">
@@ -82,7 +90,7 @@
     <br/>
     <br/>
     <br/>
-    <p style="font-size: 28px; padding: 0 0 0 30px;">Please check your email to confirm registration and gain full access to our site!</p>
+    <p style="font-size: 20px; padding: 0 0 0 30px;">Please check your email to confirm registration and gain full access to our site!</p>
 
         
     <!-- jQuery Version 1.11.0 -->
