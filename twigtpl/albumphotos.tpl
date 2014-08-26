@@ -93,6 +93,7 @@
 
                 <div class="input-group input-group-sm">
                   <input type="text" class="form-control" placeholder="Search for people to share" id="sharepeople" name="sharepeople">
+                  
                    <span class="input-group-btn">
                       <button class="btn btn-info" type="button" id="sharebtn">
                         <span class="glyphicon glyphicon-share-alt"></span>
@@ -100,6 +101,7 @@
                    </span>
                    
                 </div>
+                <span class="help-block" id="sharetip">Add multiple user names seperated by ,</span>
                 <div id="searchhelp"></div> 
               </div>
               

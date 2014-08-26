@@ -28,11 +28,11 @@ if(isset($_POST['action']) && $_POST['action'] == "check_album_exists"){
      // error_log("\nstr".$str, 3,"/var/tmp/my-errors.log");
 
       $user_arr = $dboperation->getUserArr($user_res);
-      $result = "<ul class='list-unstyled'>";
+      $result = "<div class='col-md-12'><ul class='dropdown-menu col-md-12 search-suggestions' >";
       foreach($user_arr as $k=>$val){
-        $result.= "<li><a class='clickablelinkhere' id='".$k."' href='javascript:void(0);'>".htmlspecialchars($val)."</a></li>";
+        $result.= "<li class=''><a class='clickablelinkhere' id='".$k."' href='javascript:void(0);'>".htmlspecialchars($val)."</a></li>";
       }     
-      $result.="</ul>";
+      $result.="</ul></div>";
       echo $result;
 
     }else{

@@ -1,5 +1,37 @@
 $(document).ready(function() {
 
+
+  var itemeventhandler =function(event){
+    
+    
+     var id =  event.target.id+'';
+     var email =  $(this).text();
+     useridarr[id] = email;
+     var searchstr = $("#sharepeople").val(); 
+     var index = searchstr.lastIndexOf(",");
+     console.log("index :: "+index);  
+     if(index==-1){
+      $("#sharepeople").val(email);
+     }else if(index!=-1){
+      $("#sharepeople").val(searchstr.substr(0, index)+","+email);
+     }   
+      
+    /*for (var i in useridarr) {
+    if ({}.hasOwnProperty.call(useridarr, i)){
+        console.log("KKKKK::: "+useridarr[i] + i); 
+        if( $("#sharepeople").val().length === 0 ) {
+          $("#sharepeople").val(useridarr[i]); 
+        }else{
+          $("#sharepeople").val($("#sharepeople").val()+","+useridarr[i]); 
+        }
+      }
+    }*/
+     $("#searchhelp").fadeOut("slow"); 
+     $("#searchhelp").html(""); 
+     $("#sharetip").show(); 
+     event.preventDefault();
+  };
+      
   var useridarr = {};
   $("#querymsg").text("");
   $("#sharepeople").keyup(function(event){
@@ -7,12 +39,12 @@ $(document).ready(function() {
       var value = $(this).val();
       if(value.length==0){
          $("#searchhelp").html("");
+         $("#sharetip").show();  
       }
       
       var arr = value.split(",");
       console.log("share value :: "+value+" arr length ::"+arr.length); 
       var searchstr = arr[arr.length -1];
-      console.log("new value :: "+searchstr);
       if(searchstr.length>2){
           console.log("value length  :: "+value.length); 
           $.ajax({
@@ -26,9 +58,13 @@ $(document).ready(function() {
               console.log("DATA EXISTS"+user_info);
               $("#searchhelp").fadeIn("slow");
               $("#searchhelp").html(data);
+              $("#sharetip").hide();
+              $(".search-suggestions").dropdown('toggle');
             }else{
               $("#searchhelp").html("");
+              $("#sharetip").show();
             }
+            $("a.clickablelinkhere").click(itemeventhandler);
 		      },
 		      error: function(xhr, desc, err) {
 			    console.log(xhr);
@@ -37,31 +73,9 @@ $(document).ready(function() {
 		    });
 
       }
-  });
-  
-  $("#searchhelp").off().on("click","a.clickablelinkhere",function(event){
     
-    
-     var id =  event.target.id+'';
-     var email =  $(this).text();
-     useridarr[id] = email;
-     $("#sharepeople").val(""); 
-     
-    for (var i in useridarr) {
-    if ({}.hasOwnProperty.call(useridarr, i)){
-        console.log("KKKKK::: "+useridarr[i] + i); 
-        if( $("#sharepeople").val().length === 0 ) {
-          $("#sharepeople").val(useridarr[i]); 
-        }else{
-          $("#sharepeople").val($("#sharepeople").val()+","+useridarr[i]); 
-        }
-      }
-    }
-     $("#searchhelp").fadeOut("slow"); 
-     $("#searchhelp").html(""); 
-     event.preventDefault();
   });
-      
+
 
   $("#sharebtn").click(function(event){
     var arr = $("#sharepeople").val().split(",");
@@ -76,7 +90,7 @@ $(document).ready(function() {
         else
           ids = ids+"#"+id;
       }else{
-          $("#querymsg").text("Please check user email address");
+          $("#querymsg").text("Please check user name or email address");
       }
     }//outter for
     
@@ -88,7 +102,6 @@ $(document).ready(function() {
 		          type: 'post',
 		          data: {'action': 'sharealbum', 'albumid': albumid,'uids':ids},
 		          success: function(data, status) {
-			        console.log("passed");
 			          if(data != false){
 				          var querymsg = "Album is shared successfully";
                 }else{

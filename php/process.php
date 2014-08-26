@@ -2,6 +2,10 @@
 include("../../../dbprop.php");
 $db = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
 $pinfo=$_POST['pinfo'];
+session_start();
+if(isset($_SESSION['uid'])){
+  $userid = $_SESSION['uid'];
+}
 
 if($pinfo=="show")
 {
@@ -219,7 +223,7 @@ if($pinfo=="showtags")
     }
   
     $stmt->bind_result($tid,$ttext);
-    $build="<option value=''>----Choose a tag----</option>";
+    $build="<option disabled selected>----Choose a tag----</option>";
     while($stmt->fetch())
     {
         $build.="<option value=".$tid.">".$ttext."</option>";
@@ -244,7 +248,8 @@ if($pinfo=="addtags")
     
     //check for illegal characters in any of the tags if there are then let user know
     foreach($tarray as $val){
-        if(!ctype_alpha($val)){
+
+        if(!ctype_alpha(str_replace(' ', '', $val))){
             $proceed=false;
             //$message.="please enter only alphabetic chars";
         }
@@ -254,7 +259,7 @@ if($pinfo=="addtags")
         //loop thru each tag and insert if not already in db
         $status=false;
         foreach($tarray as $val){
-            $val2=strtolower($val);
+            $val2=ucwords(strtolower($val));
             $sql="SELECT tag_text from tags where tag_text = ?";
             
             if(!$stmt = $db->prepare($sql)) 
@@ -314,7 +319,9 @@ if($pinfo=="addtags")
 if($pinfo=="tagged")
 {
     $tagid=$_POST['val'];
-    $sql="SELECT a.title,u.name,ta.album_id FROM album a,users u,tags_albums ta WHERE ta.album_id = a.album_id AND a.userid = u.uid AND ta.tagid = ?";
+    $sql="SELECT a.title,u.name,ta.album_id FROM album a,users u,tags_albums ta WHERE ta.album_id = a.album_id AND a.userid = u.uid AND  ta.tagid = ? AND u.uid = ?";
+
+
 
     if (!$stmt = $db->prepare($sql)) 
     {
@@ -322,7 +329,7 @@ if($pinfo=="tagged")
         exit;
     }
 
-    $stmt->bind_param('i',$tagid);
+    $stmt->bind_param('ii',$tagid,$userid);
     if (!$stmt->execute()) 
     {
         echo 'Database execute error';
@@ -386,8 +393,61 @@ if($pinfo=="tagged")
                 </tr>";
         
     }
+
+    //Get shared albums associated with a given tag.
+
+    $sharedalbums = getTaggedSharedAlbum($tagid,$db,$userid);
+    if(!empty($sharedalbums))
+      $build.=$sharedalbums;
     echo $build;
 }
+   
+function getTaggedSharedAlbum($tagid,$db,$userid){
 
+
+$sql = "select  a.title,u.name,ta.album_id,count(ap.photo_id) as total_photos from tags_albums ta, shared_albums sa, users u, album_photos as ap, album a where a.album_id = sa.album_id and ta.album_id = sa.album_id and a.userid = u.uid and ta.tagid  = ? and sa.shared_with_uid = ? and sa.album_id = ap.album_id GROUP BY sa.album_id";
+
+ if (!$stmt = $db->prepare($sql)) 
+    {
+        echo 'Database prepare error';
+        exit;
+    }
+
+    $stmt->bind_param('ii',$tagid,$userid);
+    if (!$stmt->execute()) 
+    {
+        echo 'Database execute error';
+        exit;
+    }
+  
+    $stmt->bind_result($title,$name,$aid,$total_photos); 
+    $titles=array();
+    $posters=array();
+    $aids=array();
+    $photo_count = array();
+
+    while($stmt->fetch())
+    {
+        $titles[]=$title;
+        $posters[]=$name;
+        $aids[]=$aid;
+        $photo_count[] = $total_photos;
+    }
+    $stmt->close();
+    
+    $result = "";
+
+    $length = count($aids);
+    for ($i = 0; $i < $length; $i++) {
+        $result.="<tr>
+                <td><a href='getAlbum.php?albumid=$aids[$i]'>$titles[$i]</a></td>
+                <td>$photo_count[$i]</td>
+                <td>$posters[$i]</td>
+                </tr>";
+        
+    }
+
+  return $result;
+}
 
 ?>

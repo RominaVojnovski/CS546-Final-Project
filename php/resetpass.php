@@ -58,7 +58,8 @@ session_start();
                         <a href="../php/upalbum.php">Upload</a>
                     </li>
                     <li>
-                        <a href="#">Tags</a>
+
+                        <a href="../php/tags.php">Tags</a>
                     </li>   
                     <?php 
                     if(isset($_SESSION['loggedin']))      
