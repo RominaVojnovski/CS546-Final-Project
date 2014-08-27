@@ -80,10 +80,7 @@ if(empty($_SESSION['confirmed'])){
 
 
         <!-- Page Heading -->
-                
-        <div class="col-md-1 navbar-right">
-                
-        </div>
+       
      
         <div class="row">
             <div class="col-md-12">
@@ -125,7 +122,7 @@ if(empty($_SESSION['confirmed'])){
                     $cdate=$row['when_posted'];
                     
                    
-                    $htmlphoto="<div class= 'row'><div class='col-md-6'><img src='imagedisplay.php?path=".$path."' class='img-responsive'/></div>";
+                    $htmlphoto="<div class= 'row'><div class='col-md-6'><img src='imagedisplay.php?path=".$path."' class='img-responsive center-block'/></div>";
                     
                     $htmlpostedby="<div class='col-md-6'><br/><h3>".$ctitle."</h3><br/>".$ctext."<br/>comment by: ".$commenter." on: ".$cdate."</div></div>";
                     echo $htmlphoto.$htmlpostedby;
@@ -133,20 +130,26 @@ if(empty($_SESSION['confirmed'])){
         
         <br/>         
         <div class="row">
-            <div class="col-md-12" id="responsediv">
+            <div class='col-md-8 col-md-offset-2' id="responsediv" style="word-wrap: break-word">
                 
             
             </div>    
         </div>
         <br/>
+        
         <div class="row">
-                    <div class="col-md-12">
-                        <form role="form" name="responseform" id="responseform"> 
+            <div style="text-align:center;" class='col-md-8 col-md-offset-2'>
+            <h3>Leave a response</h3>        
+            </div>
+        </div>
+        <div class="row">
+                    <div style="text-align:center;" class='col-md-8 col-md-offset-2'>
+                        <form style="display:inline-block;" role="form" name="responseform" id="responseform"> 
                             <input type="hidden" id="user" name="user" value="<?php echo $uid?>">
                             <input type="hidden" id="comment" name="comment" value="<?php echo $commentid?>">
                             <div class="form-group">
                                 <label>Response</label>
-                                <textarea class="form-control" name="response" id="response" style="width: 500px;" required></textarea>
+                                <textarea class="form-control" name="response" id="response" style="width: 500px; height:120px;resize: none;" maxlength="400" required></textarea>
                             </div>
                             <div class="form-group">
                                  <input type='button' id="button" class="btn btn-info" value='Submit'/><span style="padding: 0 0 0 15px" id="messagep"></span>
@@ -211,11 +214,7 @@ if(empty($_SESSION['confirmed'])){
                           var response=$("#response").val();
                           var cid=$("#comment").val();
                           var uid=$("#user").val();
-                          console.log("uid is"+uid);
-                            
-                       console.log("cid is"+cid);
-                       console.log("response is"+response);
-                        
+                          
                           $.ajax({
                               type:"post",
                               url:"process.php",

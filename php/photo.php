@@ -95,7 +95,7 @@ if(empty($_SESSION['confirmed'])){
         <?php
                 
             include("mysqli_class.php");
-            //include("../../../dbprop.php");   
+             
                     
             $db1 = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
             $db=new database();
@@ -115,7 +115,7 @@ if(empty($_SESSION['confirmed'])){
                 if(isset($_SESSION['photoarr'])){
                   $photoarr = $_SESSION['photoarr'];
                 } 
-                //$sql = "SELECT photo_id,album_id,photo_path FROM album_photos WHERE photo_id = '".$photoid."'";
+               
                 $sql= "SELECT u.name,p.photo_id,p.album_id,p.photo_path,a.when_posted FROM users u, album a, album_photos p WHERE u.uid = a.userid AND a.album_id = p.album_id AND p.photo_id = '".$photoid."'";
                 
                 $db->send_sql($sql);
@@ -179,17 +179,18 @@ if(empty($_SESSION['confirmed'])){
         
         <div class="row">
                     <div style="text-align:center;" class='col-md-8 col-md-offset-2'>
-                        <form style="display:inline-block;"role="form" name="commentform" id="commentform"> 
+                        <form style="display:inline-block;" role="form" name="commentform" id="commentform"> 
                             <input type="hidden" id="user" name="user" value="<?php if(isset($uid)){ echo $uid; }?>">
                             <input type="hidden" id="photo" name="photo" value="<?php if(isset($photoid)){ echo $photoid; } ?>">
 							<input type="hidden" id="albumid" name="albumid" value="<?php if(isset($albumid)){ echo $albumid; } ?>">		                            
-								<div class="form-group">
+								
+                            <div class="form-group">
                                 <label for="title">Title</label>
-                                <input type="text" class="form-control" name="title" id="title" maxlength="40" style="width: 500px;">
+                                <input type="text" class="form-control" name="title" id="title" maxlength="40" required style="width: 500px;">
                             </div>
                             <div class="form-group">
                                 <label>Comment</label>
-                                <textarea class="form-control" name="comment" id="comment" style="width: 500px; height:120px" required></textarea>
+                                <textarea class="form-control" maxlength="400"name="comment" id="comment" style="width: 500px; height:120px;resize: none;" required="required"></textarea>
                             </div>
                             <div class="form-group">
                                  <input type='button' id="button" class="btn btn-info" value='Submit'/><span style="padding: 0 0 0 15px" id="messagep"></span>
@@ -275,13 +276,12 @@ if(empty($_SESSION['confirmed'])){
  
                     });
 
-                  console.log("photoids :::"+$("#photoids").val());
+                  
                   function setPhotoids(){
                     var photo_ids = $("#photoids").val();
                     photoids = photo_ids.split("#");
-                    console.log("photoids arr length :::"+photoids.length +"photo id ::"+photoid);
                     counter = photoids.indexOf(photoid);
-                    console.log("counter ::"+counter);
+                    
                     if(counter<=0){
                       $("#ppager_parent").addClass("disabled");
                       $("#ppager").attr("href","#");    
