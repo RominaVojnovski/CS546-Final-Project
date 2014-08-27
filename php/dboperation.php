@@ -44,7 +44,7 @@ class dboperation{
   }
 
   public function getUserByName($name){
-    $sql = "select uid,name,email from users where name like '%".$name."%'";
+    $sql = "select uid,name,email from users where name like '%".$name."%' or email like '%".$name."%'";
     try{
       $res = $this->db->send_sql($sql);
       if($res->num_rows == 0){
