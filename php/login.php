@@ -13,15 +13,20 @@ session_start();
         <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
         <title>Login</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-       
-        <link rel="stylesheet" type="text/css" href="../css/login.css" />
-		<link rel="stylesheet" type="text/css" href="../css/animate-custom.css" />
         <!-- Bootstrap Core CSS -->
         <link href="../css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom Fonts -->
         <link href="../font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-       
+        
+        <!--Custom-->
+        <script src="../js/snap.svg-min.js"></script>
+        <script src="../js/modernizr.custom.js"></script>
+        <link rel="stylesheet" type="text/css" href="../css/login.css" />
+		<link rel="stylesheet" type="text/css" href="../css/animate-custom.css" />
+        <link rel="stylesheet" type="text/css" href="../css/ns-default.css" />
+        <link rel="stylesheet" type="text/css" href="../css/ns-style-other.css" />
+        
     </head>
     <body>
              
@@ -359,7 +364,9 @@ session_start();
                 </div>
             </div>
                 
+                
             <div class="row">
+                
                 <div class="col-md-6 col-md-offset-3">
                     
                         <p>Hi <?php echo $_SESSION['name'] ?>! Your email is <?php echo $_SESSION['email'] ?></p>
@@ -367,19 +374,6 @@ session_start();
                 </div> 
             </div>
                 <?php
-                //user has not cofirmed registration if when_confirmed Session var is NULL    
-                if(empty(($_SESSION['confirmed'])))
-                {
-                    ?>
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-3">
-                            <p>You have not confirmed registration yet please check your email.</p>
-                        </div> 
-                    </div>
-                    
-                
-                <?php
-                }
                 if(isset($mess))
                 {
                     ?>
@@ -395,6 +389,8 @@ session_start();
                 <?php
                 }      
                 ?>
+                
+                
                     
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
@@ -436,6 +432,20 @@ session_start();
                 </form>
                 </div>
                 </div>
+                
+                
+                <!--for notification style animated box-->
+                <div class="notification-shape shape-box" id="notification-shape" data-path-to="m 0,0 500,0 0,500 -500,0 z">
+			         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 500 500" preserveAspectRatio="none">
+				    <path d="m 0,0 500,0 0,500 0,-500 z"/>
+			         </svg>
+		        </div>
+                <button style="display:none" id="notification-trigger" class="progress-button">
+						<span class="content"></span>
+						<span class="progress"></span>
+				</button>
+                <!--end notification style animated box-->
+        
                 </div>
                 <?php
                 }
@@ -446,7 +456,8 @@ session_start();
 
     <!-- Bootstrap Core JavaScript -->
     <script src="../js/bootstrap.min.js"></script>
-    
+    <script src="../js/classie.js"></script>
+    <script src="../js/notificationFx.js"></script>
     <script>        
    
         
@@ -689,6 +700,52 @@ session_start();
             return validated6;
         }
         
-    </script>
+       
+        var sessConfirmed = '<?php if(isset($_SESSION['confirmed'])) { echo $_SESSION['confirmed']; }?>';
+        var sessLoggedin = '<?php if(isset($_SESSION['loggedin'])) { echo $_SESSION['loggedin']; }?>';
+       
+        if((sessConfirmed =='') && (sessLoggedin !='') ){
+            alertUser();
+        }
+        function alertUser() {
+            
+             var svgshape = document.getElementById( 'notification-shape' ),
+					s = Snap( svgshape.querySelector( 'svg' ) ),
+					path = s.select( 'path' ),
+					pathConfig = {
+						from : path.attr( 'd' ),
+						to : svgshape.getAttribute( 'data-path-to' )
+					},
+					
+            
+            bttn = document.getElementById( 'notification-trigger' );            
+                        
+					setTimeout( function() {
+
+						path.animate( { 'path' : pathConfig.to }, 300, mina.easeinout );
+
+						
+						// create the notification
+						var notification = new NotificationFx({
+							wrapper : svgshape,
+							message : '<p><span class="icon icon-bulb"></span> You have not confirmed registration yet!</p>',
+							layout : 'other',
+							effect : 'cornerexpand',
+							type : 'notice', // notice, warning or error
+							onClose : function() {
+								setTimeout(function() {
+									path.animate( { 'path' : pathConfig.from }, 300, mina.easeinout );
+								}, 100 );
+							}
+						});
+
+						// show the notification
+						notification.show();
+
+					}, 1200 );
+        } 
+
+        </script>
+   
     </body>
 </html>
